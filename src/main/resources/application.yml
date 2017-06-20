@@ -1,0 +1,9 @@
+spring:
+    jpa:
+        show-sql: true
+#        properties:
+#            hibernate.format_sql: true
+    datasource:
+        url: jdbc:mysql://192.168.194.76:3306/solomon_info
+        username: root
+        password: 123456
