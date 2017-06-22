@@ -23,12 +23,12 @@ public class SinaArticleTest {
     @Autowired
     LoggingDataService loggingDataService;
 
-    final String URL = "http://roll.finance.sina.com.cn/finance/wh/fxyc/index_{}.shtml";
-    int startIndex = 1;
-    final int totalCount = 1419;    // 总量
-    String extractArea = "div.listBlk";    // 析取区域
-    String extractLinks = "li > a[href]";    // 链接位置
-    Long menuId = 12L;    // 二级类目
+    final String URL = "http://www.caijing.com.cn/dailynews/index-{}.html";
+    int startIndex = 684;
+    final int totalCount = 6200;    // 总量
+    String extractArea = "ul.list";    // 析取区域
+    String extractLinks = "div.wzbt > a[href]";    // 链接位置
+    Long menuId = 8L;    // 二级类目
 
     @Test
     public void licaiTest() throws IOException, InterruptedException {
@@ -39,8 +39,13 @@ public class SinaArticleTest {
             try {
                 doc = Jsoup.connect(url).timeout(3000).get();
             } catch (Exception e) {
-                Thread.sleep(3000L);
-                doc = Jsoup.connect(url).timeout(3000).get();
+                Thread.sleep(6000L);
+                try {
+                    doc = Jsoup.connect(url).timeout(20000).get();
+                } catch (Exception ex) {
+                    Thread.sleep(12000L);
+                    doc = Jsoup.connect(url).timeout(30000).get();
+                }
             }
             Element candidate = doc.select(extractArea).first();
             Elements links = candidate.select(extractLinks);
@@ -51,12 +56,9 @@ public class SinaArticleTest {
                     System.out.println(link.attr("href"));
                     System.out.println(e.getMessage());
                 }
-
 //                System.out.println(link.attr("href"));
             });
         }
     }
-
-
 
 }

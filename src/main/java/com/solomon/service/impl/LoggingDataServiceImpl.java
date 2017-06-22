@@ -6,6 +6,7 @@ import com.solomon.service.LoggingDataService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,24 +36,37 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-        Element title = doc.select("h1#artibodyTitle").first();
+        Element title = doc.select("h2#cont_title").first();
 /*        Element publish_date = doc.select("span#pub_date").first();
         Element content = doc.select("div#artibody").first();*/
-        Element publish_date = doc.select("span#pub_date").first();
+        Element publish_date = doc.select("span#cont_riqi").first();
         if (publish_date == null) {
             publish_date = doc.select("span.time-source").first();
         }
 //        Element publish_date = doc.select("span.time-source").first();
-        Element content = doc.select("div#artibody").first();
+        Element content = doc.select("div#the_content").first();
+
+        Elements keywords = content.select("div.ar_keywords>a");
+        StringBuilder keywordStr = new StringBuilder("");
+        keywords.forEach(kw -> {
+            if (keywordStr.length() > 0) {
+                keywordStr.append("," + kw.text());
+            } else {
+                keywordStr.append(kw.text());
+            }
+        });
+        content.select("div.hzh").remove();
 
         try {
 //            content.children().last().remove();
-            content.getElementsByTag("blockquote").first().remove();
+/*            content.getElementsByTag("blockquote").first().remove();
             content.select("div.ct_hqimg").first().remove();
-            content.children().last().remove();
+            content.children().last().remove();*/
         } catch (Exception e) {}
 
-        String dateStr = publish_date.text().substring(0,10).replaceAll("[年|月]", "-");
+        String originDate = publish_date.text();
+        String dateStr = originDate.substring(originDate.indexOf("年")-4, originDate.indexOf("日")).replaceAll("[年|月]", "-");
+//        String dateStr = publish_date.text().substring(0,10);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         java.sql.Date date = java.sql.Date.valueOf(dateStr);
 
@@ -80,8 +94,12 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         article.setPublishedTime(date);
         article.setContent(content.html());
         article.setMenuId(menuId);
+        if (keywordStr.toString() != "") {
+            article.setKeyword(keywordStr.toString());
+        }
         try {
-//            articleService.insertArticle(article);
+            articleService.insertArticle(article);
+            System.out.println(article);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

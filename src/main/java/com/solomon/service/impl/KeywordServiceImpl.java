@@ -9,9 +9,11 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -67,9 +69,14 @@ public class KeywordServiceImpl implements KeywordService {
             secondaryKw.setStatus(1);
             secondaryKeywords.add(secondaryKw);
         }));
-        Path path = Paths.get("D:\\workspace\\git\\spider\\src\\main\\resources\\static\\data\\duplicate.txt");
+        File file = null;
         try {
-            Files.write(path, duplicateKeywords, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+            file = new ClassPathResource("static/data/duplicate.txt").getFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            Files.write(file.toPath(), duplicateKeywords, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
