@@ -55,4 +55,10 @@ public class KeywordTest {
         List<LinkedHashMap> keywords = keywordPageEntity.getDatas();
         keywords.forEach(keyword -> System.out.println(keyword.get("keyword")));
     }
+
+    @Test
+    public void test1() {
+        List<String> list = null;
+        list.forEach(li -> System.out.println(li));
+    }
 }

@@ -1,9 +1,13 @@
 package com.solomon.controller;
 
+import com.solomon.domain.ArticleForm;
+import com.solomon.domain.KeywordForm;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Created by xuehaipeng on 2017/6/12.
@@ -12,8 +16,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class HomeController {
 
     @RequestMapping("/")
-    public String home(Model model) {
-//        model.addAttribute("path", name);
+    public String home(KeywordForm keywordForm) {
+//        model.addAttribute("keywordForm", new KeywordForm());
         return "index";
     }
+
+    @RequestMapping("/article")
+    public String articleSpider(ArticleForm articleForm) {
+        return "article";
+    }
+
+
 }

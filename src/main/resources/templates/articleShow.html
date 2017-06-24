@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>资讯文章采集器</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+
+</head>
+
+<body>
+
+<div>
+    <table class="table table-striped">
+        <caption th:text="#{user.table.caption}">Site Users</caption>
+        <thead>
+        <tr>
+            <th scope="col" th:text="#{user.id.label}">Id</th>
+            <th scope="col" th:text="#{user.firstname.label}">First Name</th>
+            <th scope="col" th:text="#{user.lastname.label}">Last Name</th>
+            <th scope="col" th:text="#{user.username.label}">Username</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${currentResults.content}">
+            <td th:text="${user.id}">1</td>
+            <td th:text="${user.firstName}">George</td>
+            <td th:text="${user.lastName}">Washington</td>
+            <td th:text="${user.username}">gwash</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script src="//cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+</html>

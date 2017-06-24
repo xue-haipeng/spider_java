@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>资讯文章采集器</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/material.icon.css}" />
+    <link rel="stylesheet" th:href="@{/css/materialize.css}" />
+
+
+</head>
+<body>
+
+<div class="row" style="margin-top: 3%; margin-left: 3%;">
+    <form class="col m10" th:action="@{/article}" th:object="${articleForm}" method="post">
+        <div class="row">
+            <div class="input-field col m7">
+                <input th:field="*{url}" id="url" type="url" class="validate" />
+                <label for="url">URL</label>
+            </div>
+        </div>
+        <div class="row col m10">
+            <div class="input-field col m2">
+                <input th:field="*{startIndex}" id="startIndex" type="number" class="validate" th:errorclass="invalid" />
+                <label for="startIndex">Start Index</label>
+                <div th:if="${#fields.hasErrors('startIndex')}" th:errors="*{startIndex}" class="red-text">Error</div>
+            </div>
+            <div class="input-field col m2">
+                <input th:field="*{endIndex}" id="endIndex" type="number" class="validate" th:errorclass="invalid" />
+                <label for="endIndex">End Index</label>
+                <div th:if="${#fields.hasErrors('endIndex')}" th:errors="*{endIndex}" class="red-text">Error</div>
+            </div>
+            <div class="input-field col m3">
+                <input th:field="*{extractArea}" id="extractArea" type="text" class="validate" th:errorclass="invalid" />
+                <label for="extractArea">Extract Area</label>
+                <div th:if="${#fields.hasErrors('extractArea')}" th:errors="*{extractArea}" class="red-text">Error</div>
+            </div>
+            <div class="input-field col m3">
+                <input th:field="*{linkPosition}" id="linkPosition" type="text" class="validate" th:errorclass="invalid" />
+                <label for="linkPosition">Link Position</label>
+                <div th:if="${#fields.hasErrors('linkPosition')}" th:errors="*{linkPosition}" class="red-text">Error</div>
+            </div>
+        </div>
+        <div class="row col m9">
+            <div class="input-field col m1">
+                <input th:field="*{menuId}" id="menuId" type="number" class="validate" />
+                <label for="menuId">MenuId</label>
+            </div>
+            <div class="input-field col m2">
+                <input th:field="*{title}" id="title" type="text" class="validate" />
+                <label for="title">Title</label>
+            </div>
+            <div class="input-field col m2">
+                <input th:field="*{pubDate1}" id="pubDate1" type="text" class="validate" />
+                <label for="pubDate1">Pub Date 1</label>
+            </div>
+            <div class="input-field col m2">
+                <input th:field="*{pubDate2}" id="pubDate2" type="text" class="validate" />
+                <label for="pubDate2">Pub Date 2</label>
+            </div>
+            <div class="col m3" >
+                <button class="btn waves-effect waves-light" style="margin-left: 3%; margin-top: 2%;" type="submit" name="action">Submit
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+        </div>
+        <div class="row col m8">
+            <div class="input-field col m2">
+                <input th:field="*{keyword}" id="keyword" type="text" class="validate" />
+                <label for="keyword">Keyword</label>
+            </div>
+                <div class="input-field col m2">
+                <input th:field="*{content}" id="content" type="text" class="validate" />
+                <label for="content">Content</label>
+            </div>
+            <div class="input-field col m3">
+                <select id="excluded1" th:field="*{excluded1}" multiple="multiple">
+                    <option value="" disabled="disabled" selected="selected">Exclude 1</option>
+                    <option value="firstChild">First Child</option>
+                    <option value="lastChild">Last Child</option>
+                </select>
+                <!--<label>Exclude 1</label>-->
+            </div>
+            <div class="input-field col m2">
+                <input th:field="*{excluded2}" id="excluded2" type="text" class="validate" />
+                <label for="excluded2">Exclude 2</label>
+            </div>
+        </div>
+
+<!--        <div class="row">
+            <button class="btn waves-effect waves-light" style="margin-left: 2%; margin-top: 2%;" type="submit" name="action">Submit
+                <i class="material-icons right">send</i>
+            </button>
+        </div>-->
+    </form>
+</div>
+
+
+<script th:src="@{/js/jquery-2.1.1.min.js}"></script>
+<script th:src="@{/js/materialize.min.js}"></script>
+<script>
+    $(document).ready(function() {
+        $('select').material_select();
+    });
+</script>
+</body>
+</html>
