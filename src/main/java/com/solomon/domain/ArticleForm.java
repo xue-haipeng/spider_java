@@ -27,6 +27,7 @@ public class ArticleForm {
     @NotBlank
     private String pubDate1;
     private String pubDate2;
+    private String pubDate3;
     private String keyword;
     @NotBlank
     private String content;
@@ -107,6 +108,14 @@ public class ArticleForm {
         this.pubDate2 = pubDate2;
     }
 
+    public String getPubDate3() {
+        return pubDate3;
+    }
+
+    public void setPubDate3(String pubDate3) {
+        this.pubDate3 = pubDate3;
+    }
+
     public String getKeyword() {
         return keyword;
     }
@@ -151,6 +160,7 @@ public class ArticleForm {
                 ", title='" + title + '\'' +
                 ", pubDate1='" + pubDate1 + '\'' +
                 ", pubDate2='" + pubDate2 + '\'' +
+                ", pubDate3='" + pubDate3 + '\'' +
                 ", keyword='" + keyword + '\'' +
                 ", content='" + content + '\'' +
                 ", excluded1=" + excluded1 +

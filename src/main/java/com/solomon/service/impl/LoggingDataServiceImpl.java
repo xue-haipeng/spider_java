@@ -18,6 +18,10 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by xuehaipeng on 2017/6/13.
@@ -31,8 +35,46 @@ public class LoggingDataServiceImpl implements LoggingDataService {
 
     @Override
     public void insertWebArticle(ArticleForm form, String url) {
-        logger.info("Fetching %s... {}", url);
 
+        Map<String, String> resultMap = fetchArticle(form, url);
+
+        Pattern pattern = Pattern.compile("\\d{4}[-|\\/|年|\\.]\\d{1,2}[-|\\/|月|\\.]\\d{1,2}([日|号])?");
+        Matcher matcher = pattern.matcher(resultMap.get("originDate"));
+        String dateStr = matcher.find() ? matcher.group(0) : null;
+        String[] dateArr = dateStr.split("[-|\\/|年|月|日|号|\\.]");
+        if (dateArr[1].length() == 1) {
+            dateArr[1] = "0" + dateArr[1];
+        }
+        if (dateArr[2].length() == 1) {
+            dateArr[2] = "0" + dateArr[2];
+        }
+        java.sql.Date date = java.sql.Date.valueOf(org.apache.commons.lang3.StringUtils.join(dateArr, "-"));
+
+        Article article = new Article();
+        article.setTitle(resultMap.get("title"));
+        article.setPublishedTime(date);
+        article.setContent(resultMap.get("content"));
+        article.setMenuId(form.getMenuId());
+        article.setKeyword(resultMap.get("keyword"));
+        try {
+            articleService.insertArticle(article);
+            System.out.println(article);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+    }
+
+    /**
+     * 抓取文章元素原始值，返回<字符串形式的k,v>
+     * @param form
+     * @param url
+     * @return
+     */
+    @Override
+    public Map<String, String> fetchArticle(ArticleForm form, String url) {
+        logger.info("Fetching %s... {}", url);
+        Map<String, String> resultMap = new ConcurrentHashMap<>();
         Document doc = null;
         try {
             doc = Jsoup.connect(url).timeout(3000).get();
@@ -47,6 +89,9 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         Element publish_date = doc.select(form.getPubDate1()).first();
         if (publish_date == null && !StringUtils.isEmpty(form.getPubDate2())) {
             publish_date = doc.select(form.getPubDate2()).first();
+        }
+        if (publish_date == null && !StringUtils.isEmpty(form.getPubDate3())) {
+            publish_date = doc.select(form.getPubDate3()).first();
         }
         if (publish_date == null) {
             throw new RuntimeException("发布日期为空");
@@ -77,32 +122,15 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             content.select(form.getExcluded2()).first().remove();
         }
         String originDate = publish_date.text();
-        String dateStr = null;
-        if (originDate.contains("年")) {
-            dateStr = originDate.substring(originDate.indexOf("年")-4, originDate.indexOf("日")).replaceAll("[年|月]", "-");
-        } else {
-            dateStr = publish_date.text().trim().substring(0,10);
-        }
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        java.sql.Date date = java.sql.Date.valueOf(dateStr);
+
         if (title == null) {
             throw new RuntimeException("标题为空");
         }
         logger.info(title.text());
-        Article article = new Article();
-        article.setTitle(title.text());
-        article.setPublishedTime(date);
-        article.setContent(content.html());
-        article.setMenuId(form.getMenuId());
-        if (keywordStr.toString() != "") {
-            article.setKeyword(keywordStr.toString());
-        }
-        try {
-            articleService.insertArticle(article);
-            System.out.println(article);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
-
+        resultMap.put("title", title.text());
+        resultMap.put("originDate", originDate);
+        resultMap.put("keyword", keywordStr.toString());
+        resultMap.put("content", content.html());
+        return resultMap;
     }
 }
