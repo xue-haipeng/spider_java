@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -45,7 +46,10 @@ public class ArticleController {
                 Thread.sleep(6000L);
                 doc = Jsoup.connect(url).timeout(20_000).get();
             }
-            Element candidate = doc.select(form.getExtractArea()).first();
+            if (form.getExtractArea().startsWith("<")) {
+
+            }
+            Element candidate = form.getExtractArea().startsWith("<") ? doc.getElementsByTag(form.getExtractArea().replace("<","")).first() : doc.select(form.getExtractArea()).first();
             Elements links = candidate.select(form.getLinkPosition());
 
             Pattern pattern = Pattern.compile("^([hH][tT]{2}[pP]://|[hH][tT]{2}[pP][sS]://)(([A-Za-z0-9-~]+).)+(com|cn|net|org|biz|info|cc|tv)");
@@ -54,8 +58,8 @@ public class ArticleController {
 
             links.forEach(link -> {
                 try {
-//                    String href = link.attr("href").startsWith("http") ? link.attr("href") : matcher.group(0) + link.attr("href");
-                    String href = link.nextElementSibling().attr("href");   // <li>标签含两个<a>
+                    String href = link.attr("href").startsWith("http") ? link.attr("href") : matcher.group(0) + "/report/" + link.select("a").attr("href");
+//                    String href = link.nextElementSibling().attr("href");   // <li>标签含两个<a>
                     if (!href.startsWith("http")) {
                         href = matcher.group(0) + href;
                     }
@@ -69,9 +73,9 @@ public class ArticleController {
         return "redirect:/article";
     }
 
-    @PostMapping("/article")
+    @PostMapping("/testFetch")
     @ResponseBody
-    public Map<String, String> articleTest(@Valid ArticleForm form) {
+    public Map<String, String> articleTest(ArticleForm form) {
         Map<String, String> resultMap = new HashMap<>();
         String url = form.getUrl().replace("{}", Integer.toString(form.getStartIndex()));
         Document doc = null;
@@ -92,7 +96,7 @@ public class ArticleController {
             href = links.first().nextElementSibling().attr("href");   // <li>标签含两个<a>
         }
         if (!href.startsWith("http")) {
-            href = matcher.group(0) + href;
+            href = matcher.group(0) + "/" + href;
         }
 
         resultMap = loggingDataService.fetchArticle(form, href);

@@ -5,11 +5,28 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" th:href="@{/css/material.icon.css}" />
     <link rel="stylesheet" th:href="@{/css/materialize.css}" />
-
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"  />
 
 </head>
 <body>
-
+<!-- Modal -->
+<div class="modal fade" id="testModal" tabindex="-1" role="dialog" aria-labelledby="testModalLabel" aria-hidden="true">
+<!--    <div class="modal-content">
+    </div>&lt;!&ndash; modal-content &ndash;&gt;-->
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="testModalLabel">测试页面</h4>
+    </div>
+    <div class="modal-body">
+        <p>标题：<span id="modal_title"></span></p>
+        <p>日期：<span id="modal_date"></span> </p>
+        <p>关键词：<span id="modal_keyword"></span></p>
+        <p>内容：<span id="modal_content"></span></p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+    </div>
+</div><!-- modal -->
 <div class="row" style="margin-top: 3%; margin-left: 3%;">
     <form class="col m10" th:action="@{/article}" th:object="${articleForm}" method="post">
         <div class="row">
@@ -62,6 +79,11 @@
                     <i class="material-icons right">send</i>
                 </button>
             </div>
+            <div class="col m3" >
+                <button id="test" class="btn waves-effect waves-light" style="margin-left: 2%; margin-top: 2%;" type="button">Test
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
         </div>
         <div class="row col m10">
             <div class="input-field col m2">
@@ -82,7 +104,6 @@
                     <option value="firstChild">First Child</option>
                     <option value="lastChild">Last Child</option>
                 </select>
-                <!--<label>Exclude 1</label>-->
             </div>
             <div class="input-field col m2">
                 <input th:field="*{excluded2}" id="excluded2" type="text" class="validate" />
@@ -90,21 +111,13 @@
             </div>
         </div>
 
-<!--        <div class="row">
-            <button class="btn waves-effect waves-light" style="margin-left: 2%; margin-top: 2%;" type="submit" name="action">Submit
-                <i class="material-icons right">send</i>
-            </button>
-        </div>-->
     </form>
 </div>
 
 
 <script th:src="@{/js/jquery-2.1.1.min.js}"></script>
 <script th:src="@{/js/materialize.min.js}"></script>
-<script>
-    $(document).ready(function() {
-        $('select').material_select();
-    });
-</script>
+<script th:src="@{/js/bootstrap.min.js}" src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script th:src="@{/js/collect-test.js}"></script>
 </body>
 </html>

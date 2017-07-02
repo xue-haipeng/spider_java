@@ -38,7 +38,8 @@ public class PrdDataSendTest {
             Pageable pageable = new PageRequest(i,10, sort);
             List<Article> articles = articleRepo.findAll(pageable).getContent();
 
-            articles.forEach(article -> {
+            articles.stream().filter(article -> !article.getContent().replaceAll("<p></p>", "").equals(""))
+                    .forEach(article -> {
                 restTemplate.postForObject(URL, article, Article.class);
             });
         }
