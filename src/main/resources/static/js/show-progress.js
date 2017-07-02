@@ -19,13 +19,16 @@ function connect() {
         setConnected(true);
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/progress', function (count) {
-            showGreeting(JSON.parse(count.body));
+            // showProgress(JSON.parse(count.body));
+            showProgress(count.body);
         });
     });
 }
 
-function showGreeting(message) {
-    $("#cur_count").text(message)
+function showProgress(message) {
+    var count = message.split(":");
+    $("#cur_count").text(count[0]);
+    $("#all_sessions").text(count[1]);
 }
 
 function disconnect() {

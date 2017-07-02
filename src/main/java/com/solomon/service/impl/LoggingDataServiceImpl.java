@@ -11,6 +11,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +33,14 @@ public class LoggingDataServiceImpl implements LoggingDataService {
     private static final Logger logger = LoggerFactory.getLogger(LoggingDataServiceImpl.class);
 
     @Autowired
+    SimpMessagingTemplate messagingTemplate;
+
+    @Autowired
     ArticleService articleService;
+
+    private static ThreadLocal<Integer> count = ThreadLocal.withInitial(() -> 0);
+
+    private static AtomicInteger total = new AtomicInteger(0);
 
     @Override
     public void insertWebArticle(ArticleForm form, String url) {
@@ -58,6 +67,8 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         article.setKeyword(resultMap.get("keyword"));
         try {
             articleService.insertArticle(article);
+            count.set(count.get() + 1);
+            messagingTemplate.convertAndSend("/topic/progress", count.get() + ":" + total.getAndIncrement());
             System.out.println(article);
         } catch (Exception e) {
             logger.error(e.getMessage());

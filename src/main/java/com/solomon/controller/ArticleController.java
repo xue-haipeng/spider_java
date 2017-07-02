@@ -111,11 +111,11 @@ public class ArticleController {
         return resultMap;
     }
 
-    @MessageMapping("/hello")
+/*    @MessageMapping("/hello")
     @SendTo("/topic/progress")
     public Progress progress(Integer count) {
         return new Progress(count);
-    }
+    }*/
 
     @RequestMapping("/testsend")
     @ResponseBody
@@ -125,7 +125,8 @@ public class ArticleController {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
             }
-            this.messagingTemplate.convertAndSend("/topic/progress", 1000+i);
+
+            this.messagingTemplate.convertAndSend("/topic/progress", (1000+i) + ":" + (1000+i*5));
         }
         return "OK";
     }
