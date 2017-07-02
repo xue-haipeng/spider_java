@@ -1,6 +1,7 @@
 package com.solomon.controller;
 
 import com.solomon.domain.ArticleForm;
+import com.solomon.domain.Progress;
 import com.solomon.service.LoggingDataService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,9 +10,13 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -31,6 +36,9 @@ public class ArticleController {
 
     @Autowired
     LoggingDataService loggingDataService;
+
+    @Autowired
+    SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/article")
     public String articleForm(@Valid ArticleForm form) throws InterruptedException, IOException {
@@ -102,4 +110,24 @@ public class ArticleController {
         resultMap = loggingDataService.fetchArticle(form, href);
         return resultMap;
     }
+
+    @MessageMapping("/hello")
+    @SendTo("/topic/progress")
+    public Progress progress(Integer count) {
+        return new Progress(count);
+    }
+
+    @RequestMapping("/testsend")
+    @ResponseBody
+    public String testSend() {
+        for (int i=0; i<100; i++) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
+            this.messagingTemplate.convertAndSend("/topic/progress", 1000+i);
+        }
+        return "OK";
+    }
+
 }

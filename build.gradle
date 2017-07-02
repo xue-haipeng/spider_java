@@ -37,6 +37,10 @@ dependencies {
 	compile("org.apache.commons:commons-lang3:3.6")
 //	compile("org.springframework.boot:spring-boot-starter-data-mongodb")
 	runtime('org.springframework.boot:spring-boot-devtools')
+	compile("org.springframework.boot:spring-boot-starter-websocket")
+	compile("org.webjars:webjars-locator")
+	compile("org.webjars:sockjs-client:1.0.2")
+	compile("org.webjars:stomp-websocket:2.3.3")
 	runtime('mysql:mysql-connector-java')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

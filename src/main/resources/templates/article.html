@@ -28,7 +28,7 @@
     </div>
 </div><!-- modal -->
 <div class="row" style="margin-top: 3%; margin-left: 3%;">
-    <form class="col m10" th:action="@{/article}" th:object="${articleForm}" method="post">
+    <form class="col m8" th:action="@{/article}" th:object="${articleForm}" method="post">
         <div class="row">
             <div class="input-field col m7">
                 <input th:field="*{url}" id="url" type="url" class="validate" />
@@ -112,12 +112,20 @@
         </div>
 
     </form>
+
+    <div class="col m4">
+        <button id="show" class="btn btn-default" type="button">Show Progress</button>
+        <p id="progress" style="margin-top: 8%;">当前进度： <span id="cur_count" style="margin-left: 1%; margin-right: 1%; color: darkcyan; font-size: large;"></span> / <span id="total" style="margin-left: 1%;"></span></p>
+    </div>
 </div>
 
 
 <script th:src="@{/js/jquery-2.1.1.min.js}"></script>
 <script th:src="@{/js/materialize.min.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}" src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
 <script th:src="@{/js/collect-test.js}"></script>
+<script th:src="@{/js/show-progress.js}"></script>
 </body>
 </html>

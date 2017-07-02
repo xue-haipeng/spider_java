@@ -1,11 +1,12 @@
 package com.solomon;
 
 import org.junit.Test;
-import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -48,5 +49,33 @@ public class OrdinaryTest {
         Matcher matcher = pattern.matcher(url);
         matcher.find();
         System.out.println("URL: " + matcher.group(0));
+    }
+
+    public String asyncTest() {
+/*        List<Integer> ints = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        List<Future<Double>> asyncCalc = ints.stream().map(integer -> CompletableFuture.supplyAsync(
+                () -> slowCalc()
+        )).collect(Collectors.toList());*/
+        CompletableFuture.supplyAsync(
+                () -> slowCalc()
+        );
+        return "Done";
+    }
+
+    private Double slowCalc() {
+        try {
+            Thread.sleep(3_000);
+        } catch (InterruptedException e) {
+
+        }
+        Double randowm = Math.random();
+        System.out.println(randowm);
+        return randowm;
+    }
+
+    @Test
+    public void testAsync() throws InterruptedException {
+        System.out.println("------------- " + asyncTest() + "  ------------------------");
+        Thread.sleep(5_000);
     }
 }
