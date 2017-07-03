@@ -34,7 +34,9 @@ public class ArticleForm {
     private String content;
     private String content2;
 
-    private List<String> excluded1;
+//    private List<String> excluded1;
+    private Boolean exFirst;
+    private Boolean exLast;
 
     private String excluded2;
 
@@ -94,6 +96,14 @@ public class ArticleForm {
         this.title = title;
     }
 
+    public String getTitle2() {
+        return title2;
+    }
+
+    public void setTitle2(String title2) {
+        this.title2 = title2;
+    }
+
     public String getPubDate1() {
         return pubDate1;
     }
@@ -134,13 +144,29 @@ public class ArticleForm {
         this.content = content;
     }
 
-    public List<String> getExcluded1() {
+    public Boolean getExFirst() {
+        return exFirst;
+    }
+
+    public void setExFirst(Boolean exFirst) {
+        this.exFirst = exFirst;
+    }
+
+    public Boolean getExLast() {
+        return exLast;
+    }
+
+    public void setExLast(Boolean exLast) {
+        this.exLast = exLast;
+    }
+
+/*    public List<String> getExcluded1() {
         return excluded1;
     }
 
     public void setExcluded1(List<String> excluded1) {
         this.excluded1 = excluded1;
-    }
+    }*/
 
     public String getExcluded2() {
         return excluded2;
@@ -148,14 +174,6 @@ public class ArticleForm {
 
     public void setExcluded2(String excluded2) {
         this.excluded2 = excluded2;
-    }
-
-    public String getTitle2() {
-        return title2;
-    }
-
-    public void setTitle2(String title2) {
-        this.title2 = title2;
     }
 
     public String getContent2() {
@@ -176,12 +194,15 @@ public class ArticleForm {
                 ", linkPosition='" + linkPosition + '\'' +
                 ", menuId=" + menuId +
                 ", title='" + title + '\'' +
+                ", title2='" + title2 + '\'' +
                 ", pubDate1='" + pubDate1 + '\'' +
                 ", pubDate2='" + pubDate2 + '\'' +
                 ", pubDate3='" + pubDate3 + '\'' +
                 ", keyword='" + keyword + '\'' +
                 ", content='" + content + '\'' +
-                ", excluded1=" + excluded1 +
+                ", content2='" + content2 + '\'' +
+                ", exFirst=" + exFirst +
+                ", exLast=" + exLast +
                 ", excluded2='" + excluded2 + '\'' +
                 '}';
     }

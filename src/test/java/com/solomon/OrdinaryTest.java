@@ -2,9 +2,15 @@ package com.solomon;
 
 import org.junit.Test;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.regex.Matcher;
@@ -74,8 +80,20 @@ public class OrdinaryTest {
     }
 
     @Test
-    public void testAsync() throws InterruptedException {
-        System.out.println("------------- " + asyncTest() + "  ------------------------");
-        Thread.sleep(5_000);
+    public void testAsync() throws InterruptedException, NoSuchAlgorithmException {
+//        System.out.println("------------- " + asyncTest() + "  ------------------------");
+//        Thread.sleep(5_000);
+        String str = "http://news.machine365.com/newslist-type-27-{}.shtml";
+        MessageDigest md5 = MessageDigest.getInstance("MD5");
+        md5.update(str.getBytes());
+        System.out.println("------------ " + new BigInteger(1, md5.digest()).toString(16));
+    }
+
+    @Test
+    public void test3() {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("a", 1);
+        map.put("a", 2);
+        System.out.println(map.get("a"));
     }
 }

@@ -13,12 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,7 +40,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
     private static AtomicInteger total = new AtomicInteger(1);
 
     @Override
-    public void insertWebArticle(ArticleForm form, String url) {
+    public void insertWebArticle(ArticleForm form, String url, String random) {
 
         Map<String, String> resultMap = fetchArticle(form, url);
 
@@ -68,7 +65,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         try {
             articleService.insertArticle(article);
             count.set(count.get() + 1);
-            messagingTemplate.convertAndSend("/topic/progress", count.get() + ":" + total.getAndIncrement());
+            messagingTemplate.convertAndSend("/topic/progress/" + random, count.get() + ":" + total.getAndIncrement());
             System.out.println(article);
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -96,26 +93,26 @@ public class LoggingDataServiceImpl implements LoggingDataService {
                 logger.error("页面无法访问：{}", url, e1);
             }
         }
-        Element title = doc.select(form.getTitle()).first();
+        Element title = doc.select(form.getTitle()) == null ? null : doc.select(form.getTitle()).first();
         if (title == null && !org.apache.commons.lang3.StringUtils.isEmpty(form.getTitle2())) {
             title = doc.select(form.getTitle2()).first();
         }
         if (title == null) {
             throw new RuntimeException("标题为空");
         }
-        Element publish_date = doc.select(form.getPubDate1()).first();
+        Element publish_date = doc.select(form.getPubDate1()) == null ? null : doc.select(form.getPubDate1()).first();
         if (publish_date == null && !StringUtils.isEmpty(form.getPubDate2())) {
-            publish_date = doc.select(form.getPubDate2()).first();
+            publish_date = doc.select(form.getPubDate2()) == null ? null : doc.select(form.getPubDate2()).first();
         }
         if (publish_date == null && !StringUtils.isEmpty(form.getPubDate3())) {
-            publish_date = doc.select(form.getPubDate3()).first();
+            publish_date = doc.select(form.getPubDate3()) == null ? null : doc.select(form.getPubDate3()).first();
         }
         if (publish_date == null) {
             throw new RuntimeException("发布日期为空");
         }
         Element content = doc.select(form.getContent()).first();
         if (content == null && org.apache.commons.lang3.StringUtils.isEmpty(form.getContent2())) {
-            content = doc.select(form.getContent2()).first();
+            content = doc.select(form.getContent2()) == null ? null : doc.select(form.getContent2()).first();
         }
         if (content == null) {
             throw new RuntimeException("内容为空");
@@ -131,12 +128,11 @@ public class LoggingDataServiceImpl implements LoggingDataService {
                 }
             });
         }
-        if (!CollectionUtils.isEmpty(form.getExcluded1())) {
-            if (form.getExcluded1().contains("firstChild")) {
-                content.children().first().remove();
-            } else if (form.getExcluded1().contains("lastChild")) {
-                content.children().last().remove();
-            }
+        if (form.getExFirst() != null && form.getExFirst()) {
+            content.children().first().remove();
+        }
+        if (form.getExLast() != null && form.getExLast()) {
+            content.children().last().remove();
         }
         if (!StringUtils.isEmpty(form.getExcluded2())) {
             content.select(form.getExcluded2()).first().remove();

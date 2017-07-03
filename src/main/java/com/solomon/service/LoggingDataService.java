@@ -2,7 +2,6 @@ package com.solomon.service;
 
 import com.solomon.domain.ArticleForm;
 
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -10,6 +9,6 @@ import java.util.Map;
  */
 public interface LoggingDataService {
 
-    void insertWebArticle(ArticleForm articleForm, String url);
+    void insertWebArticle(ArticleForm articleForm, String url, String random);
     Map<String, String> fetchArticle(ArticleForm form, String url);
 }
