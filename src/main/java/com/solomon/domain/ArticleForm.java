@@ -24,6 +24,7 @@ public class ArticleForm {
     private long menuId;
     @NotBlank
     private String title;
+    private String title2;
     @NotBlank
     private String pubDate1;
     private String pubDate2;
@@ -31,6 +32,7 @@ public class ArticleForm {
     private String keyword;
     @NotBlank
     private String content;
+    private String content2;
 
     private List<String> excluded1;
 
@@ -146,6 +148,22 @@ public class ArticleForm {
 
     public void setExcluded2(String excluded2) {
         this.excluded2 = excluded2;
+    }
+
+    public String getTitle2() {
+        return title2;
+    }
+
+    public void setTitle2(String title2) {
+        this.title2 = title2;
+    }
+
+    public String getContent2() {
+        return content2;
+    }
+
+    public void setContent2(String content2) {
+        this.content2 = content2;
     }
 
     @Override

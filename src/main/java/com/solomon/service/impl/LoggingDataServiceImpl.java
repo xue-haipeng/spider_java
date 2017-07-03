@@ -40,7 +40,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
 
     private static ThreadLocal<Integer> count = ThreadLocal.withInitial(() -> 0);
 
-    private static AtomicInteger total = new AtomicInteger(0);
+    private static AtomicInteger total = new AtomicInteger(1);
 
     @Override
     public void insertWebArticle(ArticleForm form, String url) {
@@ -97,6 +97,12 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             }
         }
         Element title = doc.select(form.getTitle()).first();
+        if (title == null && !org.apache.commons.lang3.StringUtils.isEmpty(form.getTitle2())) {
+            title = doc.select(form.getTitle2()).first();
+        }
+        if (title == null) {
+            throw new RuntimeException("标题为空");
+        }
         Element publish_date = doc.select(form.getPubDate1()).first();
         if (publish_date == null && !StringUtils.isEmpty(form.getPubDate2())) {
             publish_date = doc.select(form.getPubDate2()).first();
@@ -108,6 +114,9 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             throw new RuntimeException("发布日期为空");
         }
         Element content = doc.select(form.getContent()).first();
+        if (content == null && org.apache.commons.lang3.StringUtils.isEmpty(form.getContent2())) {
+            content = doc.select(form.getContent2()).first();
+        }
         if (content == null) {
             throw new RuntimeException("内容为空");
         }
@@ -133,10 +142,6 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             content.select(form.getExcluded2()).first().remove();
         }
         String originDate = publish_date.text();
-
-        if (title == null) {
-            throw new RuntimeException("标题为空");
-        }
         logger.info(title.text());
         resultMap.put("title", title.text());
         resultMap.put("originDate", originDate);

@@ -47,5 +47,9 @@ $(function () {
     $( "#show" ).click(function() { connect(); });
     // $( "#disconnect" ).click(function() { disconnect(); });
     // $( "#send" ).click(function() { sendName(); });
+    var total_cur = $("#")
+    $("#submit").click(function () {
+
+    })
 });
 

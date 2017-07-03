@@ -34,6 +34,10 @@
                 <input th:field="*{url}" id="url" type="url" class="validate" />
                 <label for="url">URL</label>
             </div>
+            <div class="input-field col m1">
+                <input th:field="*{menuId}" id="menuId" type="number" class="validate" />
+                <label for="menuId">MenuId</label>
+            </div>
         </div>
         <div class="row col m10">
             <div class="input-field col m2">
@@ -58,13 +62,13 @@
             </div>
         </div>
         <div class="row col m9">
-            <div class="input-field col m1">
-                <input th:field="*{menuId}" id="menuId" type="number" class="validate" />
-                <label for="menuId">MenuId</label>
-            </div>
             <div class="input-field col m2">
                 <input th:field="*{title}" id="title" type="text" class="validate" />
                 <label for="title">Title</label>
+            </div>
+            <div class="input-field col m2">
+                <input th:field="*{title2}" id="title2" type="text" />
+                <label for="title2">Title2</label>
             </div>
             <div class="input-field col m2">
                 <input th:field="*{pubDate1}" id="pubDate1" type="text" class="validate" />
@@ -74,8 +78,12 @@
                 <input th:field="*{pubDate2}" id="pubDate2" type="text" class="validate" />
                 <label for="pubDate2">Pub Date 2</label>
             </div>
+            <div class="input-field col m2">
+                <input th:field="*{pubDate3}" id="pubDate3" type="text" class="validate" />
+                <label for="pubDate3">Pub Date 3</label>
+            </div>
             <div class="col m3" >
-                <button class="btn waves-effect waves-light" style="margin-left: 3%; margin-top: 2%;" type="submit" name="action">Submit
+                <button id="submit" class="btn waves-effect waves-light" style="margin-left: 3%; margin-top: 2%;" type="submit" name="action">Submit
                     <i class="material-icons right">send</i>
                 </button>
             </div>
@@ -87,10 +95,6 @@
         </div>
         <div class="row col m10">
             <div class="input-field col m2">
-                <input th:field="*{pubDate3}" id="pubDate3" type="text" class="validate" />
-                <label for="pubDate3">Pub Date 3</label>
-            </div>
-            <div class="input-field col m2">
                 <input th:field="*{keyword}" id="keyword" type="text" class="validate" />
                 <label for="keyword">Keyword</label>
             </div>
@@ -98,6 +102,11 @@
                 <input th:field="*{content}" id="content" type="text" class="validate" />
                 <label for="content">Content</label>
             </div>
+        </div>
+        <div class="input-field col m2">
+            <input th:field="*{content2}" id="content2" type="text" />
+            <label for="content2">Content2</label>
+        </div>
             <div class="input-field col m3">
                 <select id="excluded1" th:field="*{excluded1}" multiple="multiple">
                     <option value="" disabled="disabled" selected="selected">Exclude 1</option>
