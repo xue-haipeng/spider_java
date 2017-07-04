@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>资讯文章采集器</title>
+    <title>资讯问答采集器</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" th:href="@{/css/material.icon.css}" />
     <link rel="stylesheet" th:href="@{/css/materialize.css}" />
@@ -28,7 +28,7 @@
     </div>
 </div><!-- modal -->
 <div class="row" style="margin-top: 3%; margin-left: 3%;">
-    <form class="col m8" th:action="@{/article}" th:object="${articleForm}" method="post">
+    <form class="col m8" th:action="@{/article}" th:object="${questionForm}" method="post">
         <div class="row">
             <div class="input-field col m7">
                 <input th:field="*{url}" id="url" type="url" class="validate" />
@@ -99,19 +99,14 @@
                 <label for="keyword">Keyword</label>
             </div>
                 <div class="input-field col m2">
-                <input th:field="*{content}" id="content" type="text" class="validate" />
-                <label for="content">Content</label>
+                <input th:field="*{question}" id="question" type="text" class="validate" />
+                <label for="question">Question</label>
             </div>
             <div class="input-field col m2">
-                <input th:field="*{content2}" id="content2" type="text" />
-                <label for="content2">Content2</label>
+                <input th:field="*{answer}" id="answer" type="text" />
+                <label for="answer">Answer</label>
             </div>
             <div class="input-field col m2">
-                <!--<select id="excluded1" th:field="*{excluded1}" multiple="multiple">
-                    <option value="" disabled="disabled" selected="selected">Exclude 1</option>
-                    <option value="firstChild">First Child</option>
-                    <option value="lastChild">Last Child</option>
-                </select>-->
                 <p>
                     <input id="exFirst" th:field="*{exFirst}" type="checkbox" /><label for="exFirst">Ex.First</label>
                 </p>

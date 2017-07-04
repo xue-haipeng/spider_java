@@ -16,6 +16,13 @@ spring:
         username: guest
         password: guest
 
+    data:
+        mongodb:
+            host: 121.42.192.175
+            port: 27017
+            database: spider_article
+
 server:
     port: 8000
+
 

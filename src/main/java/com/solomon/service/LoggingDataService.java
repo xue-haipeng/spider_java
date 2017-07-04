@@ -1,6 +1,7 @@
 package com.solomon.service;
 
 import com.solomon.domain.ArticleForm;
+import com.solomon.domain.FormData;
 
 import java.util.Map;
 
@@ -9,6 +10,6 @@ import java.util.Map;
  */
 public interface LoggingDataService {
 
-    void insertWebArticle(ArticleForm articleForm, String url, String random);
-    Map<String, String> fetchArticle(ArticleForm form, String url);
+    void insertArticleOrQuestion(FormData form, String url, String random);
+    Map<String, String> fetchArticleOrQuestion(FormData form, String url);
 }

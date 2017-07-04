@@ -1,7 +1,9 @@
 package com.solomon.service.impl;
 
 import com.solomon.domain.Article;
+import com.solomon.domain.MongoArticle;
 import com.solomon.repository.ArticleRepo;
+import com.solomon.repository.mongo.MongoArticleRepo;
 import com.solomon.service.ArticleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     ArticleRepo articleRepo;
 
+    @Autowired
+    MongoArticleRepo mongoArticleRepo;
+
     @Override
     public void insertArticle(Article article) {
         article.setCreatedTime(new Date());
@@ -32,5 +37,10 @@ public class ArticleServiceImpl implements ArticleService {
             logger.error(e.getMessage());
         }
 
+    }
+
+    @Override
+    public MongoArticle insertMongoArticle(MongoArticle mongoArticle) {
+        return mongoArticleRepo.save(mongoArticle);
     }
 }

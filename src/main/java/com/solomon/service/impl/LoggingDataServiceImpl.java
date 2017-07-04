@@ -1,9 +1,10 @@
 package com.solomon.service.impl;
 
-import com.solomon.domain.Article;
-import com.solomon.domain.ArticleForm;
+import com.solomon.domain.*;
 import com.solomon.service.ArticleService;
 import com.solomon.service.LoggingDataService;
+import com.solomon.service.QuestionService;
+import com.solomon.utils.MongoConverter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -35,15 +36,17 @@ public class LoggingDataServiceImpl implements LoggingDataService {
     @Autowired
     ArticleService articleService;
 
+    @Autowired
+    QuestionService questionService;
+
     private static ThreadLocal<Integer> count = ThreadLocal.withInitial(() -> 0);
 
     private static AtomicInteger total = new AtomicInteger(1);
 
     @Override
-    public void insertWebArticle(ArticleForm form, String url, String random) {
+    public void insertArticleOrQuestion(FormData form, String url, String random) {
 
-        Map<String, String> resultMap = fetchArticle(form, url);
-
+        Map<String, String> resultMap = fetchArticleOrQuestion(form, url);
         Pattern pattern = Pattern.compile("\\d{4}[-|\\/|年|\\.]\\d{1,2}[-|\\/|月|\\.]\\d{1,2}([日|号])?");
         Matcher matcher = pattern.matcher(resultMap.get("originDate"));
         String dateStr = matcher.find() ? matcher.group(0) : null;
@@ -56,19 +59,38 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         }
         java.sql.Date date = java.sql.Date.valueOf(org.apache.commons.lang3.StringUtils.join(dateArr, "-"));
 
-        Article article = new Article();
-        article.setTitle(resultMap.get("title"));
-        article.setPublishedTime(date);
-        article.setContent(resultMap.get("content"));
-        article.setMenuId(form.getMenuId());
-        article.setKeyword(resultMap.get("keyword"));
-        try {
-            articleService.insertArticle(article);
-            count.set(count.get() + 1);
-            messagingTemplate.convertAndSend("/topic/progress/" + random, count.get() + ":" + total.getAndIncrement());
-            System.out.println(article);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
+        if (form.getType() == 0) {
+            Article article = new Article();
+            article.setTitle(resultMap.get("title"));
+            article.setPublishedTime(date);
+            article.setContent(resultMap.get("content"));
+            article.setMenuId(form.getMenuId());
+            article.setKeyword(resultMap.get("keyword"));
+            try {
+//            articleService.insertArticle(article);
+                articleService.insertMongoArticle((MongoArticle) MongoConverter.entityToMongo(article));
+                count.set(count.get() + 1);
+                messagingTemplate.convertAndSend("/topic/progress/" + random, count.get() + ":" + total.getAndIncrement());
+                System.out.println(article);
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            }
+        } else if (form.getType() == 1){
+            Question question = new Question();
+            question.setTitle(resultMap.get("title"));
+            question.setPublishedTime(date);
+            question.setQuestion(resultMap.get("question"));
+            question.setAnswer(resultMap.get("answer"));
+            question.setMenuId(form.getMenuId());
+            question.setKeyword(resultMap.get("keyword"));
+            try {
+                questionService.insertMongoQuestion((MongoQuestion) MongoConverter.entityToMongo(question));
+                count.set(count.get() + 1);
+                messagingTemplate.convertAndSend("/topic/progress/" + random, count.get() + ":" + total.getAndIncrement());
+                System.out.println(question);
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            }
         }
 
     }
@@ -80,8 +102,8 @@ public class LoggingDataServiceImpl implements LoggingDataService {
      * @return
      */
     @Override
-    public Map<String, String> fetchArticle(ArticleForm form, String url) {
-        logger.info("Fetching %s... {}", url);
+    public Map<String, String> fetchArticleOrQuestion(FormData form, String url) {
+        logger.info("Fetching {} ... ", url);
         Map<String, String> resultMap = new ConcurrentHashMap<>();
         Document doc = null;
         try {
@@ -110,13 +132,44 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         if (publish_date == null) {
             throw new RuntimeException("发布日期为空");
         }
-        Element content = doc.select(form.getContent()).first();
-        if (content == null && org.apache.commons.lang3.StringUtils.isEmpty(form.getContent2())) {
-            content = doc.select(form.getContent2()) == null ? null : doc.select(form.getContent2()).first();
+        Element content = null;
+        Element question = null;
+        Element answer = null;
+        if (form.getType() == 0) {
+            ArticleForm articleForm = (ArticleForm) form;
+            content = doc.select(articleForm.getContent()).first();
+            if (content == null && org.apache.commons.lang3.StringUtils.isEmpty(articleForm.getContent2())) {
+                content = doc.select(articleForm.getContent2()) == null ? null : doc.select(articleForm.getContent2()).first();
+            }
+            if (content == null) {
+                throw new RuntimeException("内容为空");
+            }
+            if (articleForm.getExFirst() != null && articleForm.getExFirst()) {
+                content.children().first().remove();
+            }
+            if (articleForm.getExLast() != null && articleForm.getExLast()) {
+                content.children().last().remove();
+            }
+            if (!StringUtils.isEmpty(articleForm.getExcluded2())) {
+                content.select(articleForm.getExcluded2()).first().remove();
+            }
+        } else if (form.getType() == 1) {
+            QuestionForm questionForm = (QuestionForm) form;
+            question = doc.select(questionForm.getQuestion()).first();
+            if (question == null) {
+                throw new RuntimeException("问题为空");
+            }
+            if (questionForm.getExFirst() != null && questionForm.getExFirst()) {
+                question.children().first().remove();
+            }
+            if (questionForm.getExLast() != null && questionForm.getExLast()) {
+                question.children().last().remove();
+            }
+            if (!StringUtils.isEmpty(questionForm.getExcluded2())) {
+                question.select(questionForm.getExcluded2()).first().remove();
+            }
         }
-        if (content == null) {
-            throw new RuntimeException("内容为空");
-        }
+
         Elements keywords = StringUtils.isEmpty(form.getKeyword()) ? null : doc.select(form.getKeyword());
         StringBuilder keywordStr = new StringBuilder("");
         if (keywords != null) {
@@ -128,21 +181,15 @@ public class LoggingDataServiceImpl implements LoggingDataService {
                 }
             });
         }
-        if (form.getExFirst() != null && form.getExFirst()) {
-            content.children().first().remove();
-        }
-        if (form.getExLast() != null && form.getExLast()) {
-            content.children().last().remove();
-        }
-        if (!StringUtils.isEmpty(form.getExcluded2())) {
-            content.select(form.getExcluded2()).first().remove();
-        }
+
         String originDate = publish_date.text();
         logger.info(title.text());
         resultMap.put("title", title.text());
         resultMap.put("originDate", originDate);
         resultMap.put("keyword", keywordStr.toString());
         resultMap.put("content", content.html());
+        resultMap.put("question", question.html());
+        resultMap.put("answer", answer.html());
         return resultMap;
     }
 }
