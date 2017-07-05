@@ -26,21 +26,25 @@ public class PrdDataSendTest {
     RestTemplate restTemplate = new RestTemplate();
     final String URL = "http://man.wxlink.jd.com/dataCollect";
     final Sort sort = new Sort(Sort.Direction.ASC, "id");
+    private static ThreadLocal<Integer> count = ThreadLocal.withInitial(() -> 1);
 
     @Autowired
     ArticleRepo articleRepo;
 
     @Test
     public void testInsertPrd() {
-        int totalPage = 200000/10 +1;
-        for (int i = 9625; i < totalPage; i++) {
+        int totalPage = 1_200_000/10 +1;
+        for (int i = 1; i < totalPage; i++) {   // zixun: i = 15_000
             System.out.println("第 " + i + " 页");
             Pageable pageable = new PageRequest(i,10, sort);
             List<Article> articles = articleRepo.findAll(pageable).getContent();
 
-            articles.stream().filter(article -> !article.getContent().replaceAll("<p></p>", "").equals(""))
-                    .forEach(article -> {
-                restTemplate.postForObject(URL, article, Article.class);
+            articles.stream().filter(article -> !article.getContent().equals("<p></p>")).forEach(article -> {
+                Article posted = restTemplate.postForObject(URL, article, Article.class);
+                if (posted != null && posted.getId() != null) {
+                    count.set(count.get() + 1);
+                    System.out.println(count.get());
+                }
             });
         }
 

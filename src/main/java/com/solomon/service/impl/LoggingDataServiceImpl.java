@@ -5,6 +5,7 @@ import com.solomon.service.ArticleService;
 import com.solomon.service.LoggingDataService;
 import com.solomon.service.QuestionService;
 import com.solomon.utils.MongoConverter;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.Map;
@@ -57,7 +57,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         if (dateArr[2].length() == 1) {
             dateArr[2] = "0" + dateArr[2];
         }
-        java.sql.Date date = java.sql.Date.valueOf(org.apache.commons.lang3.StringUtils.join(dateArr, "-"));
+        java.sql.Date date = java.sql.Date.valueOf(StringUtils.join(dateArr, "-"));
 
         if (form instanceof ArticleForm) {
             Article article = new Article();
@@ -116,7 +116,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             }
         }
         Element title = doc.select(form.getTitle()) == null ? null : doc.select(form.getTitle()).first();
-        if (title == null && !org.apache.commons.lang3.StringUtils.isEmpty(form.getTitle2())) {
+        if (title == null && !StringUtils.isEmpty(form.getTitle2())) {
             title = doc.select(form.getTitle2()).first();
         }
         if (title == null) {
@@ -138,7 +138,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         if (form instanceof ArticleForm) {
             ArticleForm articleForm = (ArticleForm) form;
             content = doc.select(articleForm.getContent()).first();
-            if (content == null && org.apache.commons.lang3.StringUtils.isEmpty(articleForm.getContent2())) {
+            if (content == null && StringUtils.isEmpty(articleForm.getContent2())) {
                 content = doc.select(articleForm.getContent2()) == null ? null : doc.select(articleForm.getContent2()).first();
             }
             if (content == null) {
@@ -193,4 +193,5 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         resultMap.put("keyword", keywordStr.toString());
         return resultMap;
     }
+
 }

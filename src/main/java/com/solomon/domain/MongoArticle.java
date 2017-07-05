@@ -20,6 +20,12 @@ public class MongoArticle extends MongoZixun implements Serializable {
     private String id;
     private String content;// 内容
 
+    public MongoArticle() {}
+
+    public MongoArticle(MongoZixun mongoZixun) {
+        super(mongoZixun);
+    }
+
     public String getId() {
         return id;
     }

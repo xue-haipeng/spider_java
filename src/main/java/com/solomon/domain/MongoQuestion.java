@@ -21,7 +21,6 @@ public class MongoQuestion extends MongoZixun implements Serializable {
 
     public MongoQuestion(MongoZixun mongoZixun) {
         super(mongoZixun);
-
     }
 
     public String getId() {

@@ -7,7 +7,6 @@ spring:
 #        url: jdbc:mysql://192.168.194.76:3306/solomon_info
         url: jdbc:mysql://localhost:3306/zixun_spider
         username: root
-#        password: 123456
         password: root
 
     rabbitmq:

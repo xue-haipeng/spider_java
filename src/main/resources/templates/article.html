@@ -11,8 +11,6 @@
 <body>
 <!-- Modal -->
 <div class="modal fade" id="testModal" tabindex="-1" role="dialog" aria-labelledby="testModalLabel" aria-hidden="true">
-<!--    <div class="modal-content">
-    </div>&lt;!&ndash; modal-content &ndash;&gt;-->
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title" id="testModalLabel">测试页面</h4>
@@ -28,7 +26,6 @@
     </div>
 </div><!-- modal -->
 <div class="row" style="margin-top: 3%; margin-left: 3%;">
-    <!--<form class="col m8" th:action="${#httpServletRequest.requestURI=='/article'}?'/article':'/question'" th:object="${form}" method="post">-->
     <form class="col m8" th:action="@{/article}" th:object="${articleForm}" method="post">
         <div class="row">
             <div class="input-field col m7">
@@ -83,16 +80,6 @@
                 <input th:field="*{pubDate3}" id="pubDate3" type="text" class="validate" />
                 <label for="pubDate3">Pub Date 3</label>
             </div>
-            <div class="col m3" >
-                <button id="submit" class="btn waves-effect waves-light" style="margin-left: 3%; margin-top: 2%;" type="submit" name="action">Submit
-                    <i class="material-icons right">send</i>
-                </button>
-            </div>
-            <div class="col m3" >
-                <button id="article_test" class="btn waves-effect waves-light" style="margin-left: 2%; margin-top: 2%;" type="button">Test
-                    <i class="material-icons right">send</i>
-                </button>
-            </div>
         </div>
         <div class="row col m10">
             <div class="input-field col m2">
@@ -107,22 +94,8 @@
                 <input th:field="*{content2}" id="content2" type="text" />
                 <label for="content2">Content2</label>
             </div>
-<!--
-            <div th:if="${#httpServletRequest.requestURI == '/question'}" class="input-field col m2">
-                <input th:field="*{question}" id="question" type="text" class="validate" />
-                <label for="answer">Question</label>
-            </div>
-            <div th:if="${#httpServletRequest.requestURI == '/question'}" class="input-field col m2">
-                <input th:field="*{answer}" id="answer" type="text" />
-                <label for="answer">Answer</label>
-            </div>-->
 
             <div class="input-field col m2">
-                <!--<select id="excluded1" th:field="*{excluded1}" multiple="multiple">
-                    <option value="" disabled="disabled" selected="selected">Exclude 1</option>
-                    <option value="firstChild">First Child</option>
-                    <option value="lastChild">Last Child</option>
-                </select>-->
                 <p>
                     <input id="exFirst" th:field="*{exFirst}" type="checkbox" /><label for="exFirst">Ex.First</label>
                 </p>
@@ -130,13 +103,23 @@
                     <input id="exLast" th:field="*{exLast}" type="checkbox" /><label for="exLast">Ex.Last</label>
                 </p>
             </div>
-
             <div class="input-field col m2">
                 <input th:field="*{excluded2}" id="excluded2" type="text" class="validate" />
                 <label for="excluded2">Exclude 2</label>
             </div>
         </div>
-        <!--<h3><span th:text="${#httpServletRequest.requestURI}"></span> H3</h3>-->
+        <div class="row col m8" style="text-align: right;">
+            <div class="col m3" >
+                <button id="submit" class="btn waves-effect waves-light" style="margin-left: 3%; margin-top: 2%;" type="submit" name="action">Submit
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+            <div class="col m3" >
+                <button id="article_test" class="btn waves-effect waves-light" style="margin-left: 2%; margin-top: 2%;" type="button">Test
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+        </div>
     </form>
 
     <div class="col m4">

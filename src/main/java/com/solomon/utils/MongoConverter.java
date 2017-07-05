@@ -20,12 +20,11 @@ public class MongoConverter {
         mongoZixun.setPublishedTime(entity.getPublishedTime());
         if (entity instanceof Article) {
             Article article = (Article) entity;
-            MongoArticle mongoArticle = (MongoArticle) mongoZixun;
+            MongoArticle mongoArticle = new MongoArticle(mongoZixun);
             mongoArticle.setContent(article.getContent());
             return mongoArticle;
         } else if (entity instanceof Question) {
             Question question = (Question) entity;
-//            MongoQuestion mongoQuestion = (MongoQuestion) mongoZixun;
             MongoQuestion mongoQuestion = new MongoQuestion(mongoZixun);
             mongoQuestion.setQuestion(question.getQuestion());
             mongoQuestion.setAnswer(question.getAnswer());
