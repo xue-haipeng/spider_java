@@ -13,15 +13,22 @@ import java.util.Date;
 public class MongoQuestion extends MongoZixun implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    private Long id;  // id
+    private String id;  // id
     private String question;  // 问题
     private String answer;  // 答案
 
-    public Long getId() {
+    public MongoQuestion() {}
+
+    public MongoQuestion(MongoZixun mongoZixun) {
+        super(mongoZixun);
+
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

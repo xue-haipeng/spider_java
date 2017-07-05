@@ -2,6 +2,7 @@ package com.solomon.controller;
 
 import com.solomon.domain.ArticleForm;
 import com.solomon.domain.FormData;
+import com.solomon.domain.QuestionForm;
 import com.solomon.service.LoggingDataService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -40,7 +41,17 @@ public class ArticleController {
     SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/article")
-    public String articleForm(@Valid FormData form) {
+    public String articleForm(@Valid ArticleForm articleForm) {
+        try {
+            extractAndFetch(articleForm);
+        } catch (InterruptedException | NoSuchAlgorithmException | IOException e) {
+            e.printStackTrace();
+        }
+        return "redirect:/article";
+    }
+
+    @PostMapping("/question")
+    public String questionForm(@Valid QuestionForm form) {
         try {
             extractAndFetch(form);
         } catch (InterruptedException | NoSuchAlgorithmException | IOException e) {
@@ -49,10 +60,19 @@ public class ArticleController {
         return "redirect:/article";
     }
 
-    @PostMapping("/testFetch")
+    @PostMapping("/testArticleFetch")
     @ResponseBody
-    public Map<String, String> articleTest(ArticleForm form) {
-        Map<String, String> resultMap = new HashMap<>();
+    public Map<String, String> articleTest(ArticleForm articleForm) {
+        return testFech(articleForm);
+    }
+
+    @PostMapping("/testQuestionFetch")
+    @ResponseBody
+    public Map<String, String> questionTest(QuestionForm questionForm) {
+        return testFech(questionForm);
+    }
+
+    private Map<String, String> testFech(FormData form) {
         String url = form.getUrl().replace("{}", Integer.toString(form.getStartIndex()));
         Document doc = null;
         try {
@@ -62,11 +82,9 @@ public class ArticleController {
         }
         Element candidate = doc.select(form.getExtractArea()).first();
         Elements links = candidate.select(form.getLinkPosition());
-
         Pattern pattern = Pattern.compile("^([hH][tT]{2}[pP]://|[hH][tT]{2}[pP][sS]://)(([A-Za-z0-9-~]+).)+(com|cn|net|org|biz|info|cc|tv)");
         Matcher matcher = pattern.matcher(url);
         matcher.find();
-
         Element hrefElement = links.first().toString().startsWith("<a ") ? links.first() : links.first().child(0);
         String href = hrefElement.attr("href").startsWith("http") ? hrefElement.attr("href") : matcher.group(0) + hrefElement.attr("href");
         if (href.endsWith("index.shtml") && links.first().nextElementSibling() != null) {
@@ -75,8 +93,7 @@ public class ArticleController {
         if (!href.startsWith("http")) {
             href = matcher.group(0) + "/" + href;
         }
-
-        resultMap = loggingDataService.fetchArticleOrQuestion(form, href);
+        Map<String, String> resultMap = loggingDataService.fetchArticleOrQuestion(form, href);
         return resultMap;
     }
 

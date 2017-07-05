@@ -18,6 +18,20 @@ public class MongoZixun {
     private Date updatedTime;
     private Date publishedTime;  // 发布日期
 
+    public MongoZixun() {}
+
+    public MongoZixun(MongoZixun mongoZixun) {
+        this.title = mongoZixun.getTitle();
+        this.keyword = mongoZixun.getKeyword();
+        this.menuId = mongoZixun.getMenuId();
+        this.authorId = mongoZixun.getAuthorId();
+        this.weight = mongoZixun.getWeight();
+        this.status = mongoZixun.getStatus();
+        this.score = mongoZixun.getScore();
+        this.createdTime = mongoZixun.getCreatedTime();
+        this.updatedTime = mongoZixun.getUpdatedTime();
+        this.publishedTime = mongoZixun.publishedTime;
+    }
     public String getTitle() {
         return title;
     }

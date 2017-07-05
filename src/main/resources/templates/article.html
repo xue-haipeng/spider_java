@@ -28,6 +28,7 @@
     </div>
 </div><!-- modal -->
 <div class="row" style="margin-top: 3%; margin-left: 3%;">
+    <!--<form class="col m8" th:action="${#httpServletRequest.requestURI=='/article'}?'/article':'/question'" th:object="${form}" method="post">-->
     <form class="col m8" th:action="@{/article}" th:object="${articleForm}" method="post">
         <div class="row">
             <div class="input-field col m7">
@@ -88,7 +89,7 @@
                 </button>
             </div>
             <div class="col m3" >
-                <button id="test" class="btn waves-effect waves-light" style="margin-left: 2%; margin-top: 2%;" type="button">Test
+                <button id="article_test" class="btn waves-effect waves-light" style="margin-left: 2%; margin-top: 2%;" type="button">Test
                     <i class="material-icons right">send</i>
                 </button>
             </div>
@@ -98,7 +99,7 @@
                 <input th:field="*{keyword}" id="keyword" type="text" class="validate" />
                 <label for="keyword">Keyword</label>
             </div>
-                <div class="input-field col m2">
+            <div class="input-field col m2">
                 <input th:field="*{content}" id="content" type="text" class="validate" />
                 <label for="content">Content</label>
             </div>
@@ -106,6 +107,16 @@
                 <input th:field="*{content2}" id="content2" type="text" />
                 <label for="content2">Content2</label>
             </div>
+<!--
+            <div th:if="${#httpServletRequest.requestURI == '/question'}" class="input-field col m2">
+                <input th:field="*{question}" id="question" type="text" class="validate" />
+                <label for="answer">Question</label>
+            </div>
+            <div th:if="${#httpServletRequest.requestURI == '/question'}" class="input-field col m2">
+                <input th:field="*{answer}" id="answer" type="text" />
+                <label for="answer">Answer</label>
+            </div>-->
+
             <div class="input-field col m2">
                 <!--<select id="excluded1" th:field="*{excluded1}" multiple="multiple">
                     <option value="" disabled="disabled" selected="selected">Exclude 1</option>
@@ -125,7 +136,7 @@
                 <label for="excluded2">Exclude 2</label>
             </div>
         </div>
-
+        <!--<h3><span th:text="${#httpServletRequest.requestURI}"></span> H3</h3>-->
     </form>
 
     <div class="col m4">

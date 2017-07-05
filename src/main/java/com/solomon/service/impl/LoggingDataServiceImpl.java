@@ -59,7 +59,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         }
         java.sql.Date date = java.sql.Date.valueOf(org.apache.commons.lang3.StringUtils.join(dateArr, "-"));
 
-        if (form.getType() == 0) {
+        if (form instanceof ArticleForm) {
             Article article = new Article();
             article.setTitle(resultMap.get("title"));
             article.setPublishedTime(date);
@@ -75,7 +75,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             } catch (Exception e) {
                 logger.error(e.getMessage());
             }
-        } else if (form.getType() == 1){
+        } else if (form instanceof QuestionForm){
             Question question = new Question();
             question.setTitle(resultMap.get("title"));
             question.setPublishedTime(date);
@@ -135,7 +135,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         Element content = null;
         Element question = null;
         Element answer = null;
-        if (form.getType() == 0) {
+        if (form instanceof ArticleForm) {
             ArticleForm articleForm = (ArticleForm) form;
             content = doc.select(articleForm.getContent()).first();
             if (content == null && org.apache.commons.lang3.StringUtils.isEmpty(articleForm.getContent2())) {
@@ -153,7 +153,8 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             if (!StringUtils.isEmpty(articleForm.getExcluded2())) {
                 content.select(articleForm.getExcluded2()).first().remove();
             }
-        } else if (form.getType() == 1) {
+            resultMap.put("content", content.html());
+        } else if (form instanceof QuestionForm) {
             QuestionForm questionForm = (QuestionForm) form;
             question = doc.select(questionForm.getQuestion()).first();
             if (question == null) {
@@ -168,8 +169,12 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             if (!StringUtils.isEmpty(questionForm.getExcluded2())) {
                 question.select(questionForm.getExcluded2()).first().remove();
             }
+            answer = doc.select(questionForm.getAnswer()).first();
+            resultMap.put("question", question.html());
+            if (answer != null) {
+                resultMap.put("answer", answer.html());
+            }
         }
-
         Elements keywords = StringUtils.isEmpty(form.getKeyword()) ? null : doc.select(form.getKeyword());
         StringBuilder keywordStr = new StringBuilder("");
         if (keywords != null) {
@@ -181,15 +186,11 @@ public class LoggingDataServiceImpl implements LoggingDataService {
                 }
             });
         }
-
         String originDate = publish_date.text();
         logger.info(title.text());
         resultMap.put("title", title.text());
         resultMap.put("originDate", originDate);
         resultMap.put("keyword", keywordStr.toString());
-        resultMap.put("content", content.html());
-        resultMap.put("question", question.html());
-        resultMap.put("answer", answer.html());
         return resultMap;
     }
 }

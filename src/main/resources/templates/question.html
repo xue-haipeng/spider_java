@@ -21,14 +21,15 @@
         <p>标题：<span id="modal_title"></span></p>
         <p>日期：<span id="modal_date"></span> </p>
         <p>关键词：<span id="modal_keyword"></span></p>
-        <p>内容：<span id="modal_content"></span></p>
+        <p>问题：<span id="modal_question"></span></p>
+        <p>回复：<span id="modal_answer"></span></p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
     </div>
 </div><!-- modal -->
 <div class="row" style="margin-top: 3%; margin-left: 3%;">
-    <form class="col m8" th:action="@{/article}" th:object="${questionForm}" method="post">
+    <form class="col m8" th:action="@{/question}" th:object="${questionForm}" method="post">
         <div class="row">
             <div class="input-field col m7">
                 <input th:field="*{url}" id="url" type="url" class="validate" />
@@ -88,7 +89,7 @@
                 </button>
             </div>
             <div class="col m3" >
-                <button id="test" class="btn waves-effect waves-light" style="margin-left: 2%; margin-top: 2%;" type="button">Test
+                <button id="question_test" class="btn waves-effect waves-light" style="margin-left: 2%; margin-top: 2%;" type="button">Test
                     <i class="material-icons right">send</i>
                 </button>
             </div>

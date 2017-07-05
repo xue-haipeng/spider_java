@@ -25,7 +25,8 @@ public class MongoConverter {
             return mongoArticle;
         } else if (entity instanceof Question) {
             Question question = (Question) entity;
-            MongoQuestion mongoQuestion = (MongoQuestion) mongoZixun;
+//            MongoQuestion mongoQuestion = (MongoQuestion) mongoZixun;
+            MongoQuestion mongoQuestion = new MongoQuestion(mongoZixun);
             mongoQuestion.setQuestion(question.getQuestion());
             mongoQuestion.setAnswer(question.getAnswer());
             return mongoQuestion;
