@@ -1,14 +1,19 @@
-package com.solomon.domain;
+package com.solomon.vo;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.validation.constraints.Min;
 
 /**
  * Created by xuehaipeng on 2017/7/4.
  */
+@Document(indexName = "customer", type = "customer", shards = 1, replicas = 0, refreshInterval = "-1")
 public class FormData {
+    @Id
+    private String id;
     @URL
     private String url;
     @Min(1)
@@ -165,22 +170,23 @@ public class FormData {
     @Override
     public String toString() {
         return "FormData{" +
-                "url='" + url + '\'' +
-                ", startIndex=" + startIndex +
-                ", endIndex=" + endIndex +
-                ", extractArea='" + extractArea + '\'' +
-                ", linkPosition='" + linkPosition + '\'' +
-                ", menuId=" + menuId +
-                ", title='" + title + '\'' +
-                ", title2='" + title2 + '\'' +
-                ", pubDate1='" + pubDate1 + '\'' +
-                ", pubDate2='" + pubDate2 + '\'' +
-                ", pubDate3='" + pubDate3 + '\'' +
-                ", keyword='" + keyword + '\'' +
-                ", exFirst=" + exFirst +
-                ", exLast=" + exLast +
-                ", excluded2='" + excluded2 + '\'' +
-                ", type=" + type +
+                "id:'" + id + '\'' +
+                ", url:'" + url + '\'' +
+                ", startIndex:" + startIndex +
+                ", endIndex:" + endIndex +
+                ", extractArea:'" + extractArea + '\'' +
+                ", linkPosition:'" + linkPosition + '\'' +
+                ", menuId:" + menuId +
+                ", title:'" + title + '\'' +
+                ", title2:'" + title2 + '\'' +
+                ", pubDate1:'" + pubDate1 + '\'' +
+                ", pubDate2:'" + pubDate2 + '\'' +
+                ", pubDate3:'" + pubDate3 + '\'' +
+                ", keyword:'" + keyword + '\'' +
+                ", exFirst:" + exFirst +
+                ", exLast:" + exLast +
+                ", excluded2:'" + excluded2 + '\'' +
+                ", type:" + type +
                 '}';
     }
 }

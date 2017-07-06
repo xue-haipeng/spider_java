@@ -1,9 +1,7 @@
-package com.solomon.domain;
+package com.solomon.vo;
 
+import com.solomon.vo.FormData;
 import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.URL;
-
-import javax.validation.constraints.Min;
 
 /**
  * Created by xuehaipeng on 2017/7/4.

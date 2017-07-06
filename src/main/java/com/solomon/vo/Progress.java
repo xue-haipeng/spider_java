@@ -1,4 +1,4 @@
-package com.solomon.domain;
+package com.solomon.vo;
 
 /**
  * Created by xuehaipeng on 2017/7/2.

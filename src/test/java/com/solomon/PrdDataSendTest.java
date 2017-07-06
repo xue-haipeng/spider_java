@@ -1,9 +1,13 @@
 package com.solomon;
 
+import com.github.pagehelper.PageHelper;
 import com.solomon.domain.Article;
-import com.solomon.domain.Keyword;
+import com.solomon.domain.ArticleForPost;
+import com.solomon.vo.FormData;
+import com.solomon.mapper.ArticleMapper;
+import com.solomon.repository.ArticleForPostRepo;
 import com.solomon.repository.ArticleRepo;
-import com.solomon.service.ArticleService;
+import com.solomon.repository.elasticsearch.FormDataRepo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +35,15 @@ public class PrdDataSendTest {
     @Autowired
     ArticleRepo articleRepo;
 
+    @Autowired
+    ArticleMapper articleMapper;
+
+    @Autowired
+    ArticleForPostRepo articleForPostRepo;
+
     @Test
     public void testInsertPrd() {
-        int totalPage = 1_200_000/10 +1;
+        int totalPage = 20/10 +1;
         for (int i = 1; i < totalPage; i++) {   // zixun: i = 15_000
             System.out.println("第 " + i + " 页");
             Pageable pageable = new PageRequest(i,10, sort);
@@ -48,5 +58,34 @@ public class PrdDataSendTest {
             });
         }
 
+    }
+
+
+    @Test
+    public void testInsertQat() {
+        PageHelper.startPage(1, 10);
+        Pageable pageable = new PageRequest(1,10, sort);
+        List<ArticleForPost> articles = articleForPostRepo.findAll(pageable).getContent();
+        articles.forEach(article -> restTemplate.postForObject(URL, article, ArticleForPost.class));
+    }
+
+    @Autowired
+    FormDataRepo formDataRepo;
+
+    @Test
+    public void testEs() {
+/*        FormData formData = new FormData();
+        formData.setUrl("http://www.ofweek.com/CATList-8100-CHANGYIEXINWE-{}.html");
+        formData.setMenuId(16L);
+        formData.setExtractArea("div.list-left");
+        formData.setStartIndex(1);
+        formData.setEndIndex(31090);
+        formData.setLinkPosition("a[title]");
+        formData.setTitle("h1");
+        formData.setPubDate1("span.sdate");
+        formData.setType(0);
+        formDataRepo.save(formData);*/
+//        formDataRepo.findAll().forEach(System.out::println);
+        System.out.println(formDataRepo.findOne("AV0XHo1gQuzSwRAkIXQd"));
     }
 }

@@ -1,7 +1,6 @@
 package com.solomon.service;
 
-import com.solomon.domain.ArticleForm;
-import com.solomon.domain.FormData;
+import com.solomon.vo.FormData;
 
 import java.util.Map;
 

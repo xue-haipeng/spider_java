@@ -1,4 +1,4 @@
-package com.solomon.domain;
+package com.solomon.vo;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

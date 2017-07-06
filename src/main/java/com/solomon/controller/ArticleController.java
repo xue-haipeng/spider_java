@@ -1,8 +1,8 @@
 package com.solomon.controller;
 
-import com.solomon.domain.ArticleForm;
-import com.solomon.domain.FormData;
-import com.solomon.domain.QuestionForm;
+import com.solomon.vo.ArticleForm;
+import com.solomon.vo.FormData;
+import com.solomon.vo.QuestionForm;
 import com.solomon.service.LoggingDataService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

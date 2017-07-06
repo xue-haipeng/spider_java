@@ -1,10 +1,13 @@
 package com.solomon.mapper;
 
 import com.solomon.domain.Article;
+import com.solomon.domain.ArticleForPost;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * Created by xuehaipeng on 2017/7/5.
@@ -19,4 +22,7 @@ public interface ArticleMapper {
 
     @Select("SELECT * FROM spider_wx_article WHERE id = #{id}")
     Article findById(@Param("id") Long id);
+
+    @Select("SELECT * FROM spider_wx_article")
+    List<ArticleForPost> findAll();
 }

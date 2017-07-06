@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 /**
  * Created by xuehaipeng on 2017/7/6.
  */
@@ -19,4 +21,8 @@ public interface QuestionMapper {
 
     @Select("SELECT * FROM spider_wx_question WHERE id = #{id}")
     Question findById(@Param("id") Long id);
+
+    @Select("SELECT * FROM spider_wx_question")
+    List<Question> findAll();
+
 }

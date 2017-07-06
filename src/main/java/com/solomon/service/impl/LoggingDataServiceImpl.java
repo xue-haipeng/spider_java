@@ -1,11 +1,12 @@
 package com.solomon.service.impl;
 
 import com.solomon.domain.*;
-import com.solomon.mapper.ArticleMapper;
 import com.solomon.service.ArticleService;
 import com.solomon.service.LoggingDataService;
 import com.solomon.service.QuestionService;
-import com.solomon.utils.MongoConverter;
+import com.solomon.vo.ArticleForm;
+import com.solomon.vo.FormData;
+import com.solomon.vo.QuestionForm;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

@@ -2,7 +2,7 @@ package com.solomon.controller;
 
 import com.solomon.config.RabbitMqConfig;
 import com.solomon.domain.Keyword;
-import com.solomon.domain.KeywordForm;
+import com.solomon.vo.KeywordForm;
 import com.solomon.domain.PageEntity;
 import com.solomon.service.KeywordService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
