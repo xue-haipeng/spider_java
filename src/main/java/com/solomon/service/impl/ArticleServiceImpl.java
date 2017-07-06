@@ -2,6 +2,7 @@ package com.solomon.service.impl;
 
 import com.solomon.domain.Article;
 import com.solomon.domain.MongoArticle;
+import com.solomon.mapper.ArticleMapper;
 import com.solomon.repository.ArticleRepo;
 import com.solomon.repository.mongo.MongoArticleRepo;
 import com.solomon.service.ArticleService;
@@ -25,6 +26,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     MongoArticleRepo mongoArticleRepo;
 
+    @Autowired
+    ArticleMapper articleMapper;
+
     @Override
     public void insertArticle(Article article) {
         article.setCreatedTime(new Date());
@@ -32,7 +36,8 @@ public class ArticleServiceImpl implements ArticleService {
         article.setStatus(1);
         article.setScore(0);
         try {
-            articleRepo.save(article);
+//            articleRepo.save(article);   // Spring Data JPA
+            articleMapper.insertByArticle(article);    // Mybatis
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

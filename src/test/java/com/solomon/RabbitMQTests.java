@@ -3,6 +3,7 @@ package com.solomon;
 import com.solomon.config.RabbitMqConfig;
 import com.solomon.controller.ArticleController;
 import com.solomon.domain.Keyword;
+import com.solomon.mapper.ArticleMapper;
 import com.solomon.repository.KeywordRepo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +46,13 @@ public class RabbitMQTests {
 		template.convertAndSend("/topic/progress", 9999);
 	}
 
+	@Autowired
+	ArticleMapper articleMapper;
+
+	@Test
+	public void testMyBatis() {
+		System.out.println(articleMapper.findById(10000L));
+	}
 
 
 }

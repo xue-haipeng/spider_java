@@ -8,6 +8,12 @@ spring:
         url: jdbc:mysql://localhost:3306/zixun_spider
         username: root
         password: root
+    mybatis:
+        type-aliases-package: com.solomon.domain
+        configuration:
+            map-underscore-to-camel-case: true
+            default-fetch-size: 100
+            default-statement-timeout: 30
 
     rabbitmq:
         host: 121.42.192.175

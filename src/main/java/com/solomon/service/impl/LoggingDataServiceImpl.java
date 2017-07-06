@@ -1,6 +1,7 @@
 package com.solomon.service.impl;
 
 import com.solomon.domain.*;
+import com.solomon.mapper.ArticleMapper;
 import com.solomon.service.ArticleService;
 import com.solomon.service.LoggingDataService;
 import com.solomon.service.QuestionService;
@@ -67,8 +68,8 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             article.setMenuId(form.getMenuId());
             article.setKeyword(resultMap.get("keyword"));
             try {
-//            articleService.insertArticle(article);
-                articleService.insertMongoArticle((MongoArticle) MongoConverter.entityToMongo(article));
+                articleService.insertArticle(article);
+//                articleService.insertMongoArticle((MongoArticle) MongoConverter.entityToMongo(article));
                 count.set(count.get() + 1);
                 messagingTemplate.convertAndSend("/topic/progress/" + random, count.get() + ":" + total.getAndIncrement());
                 System.out.println(article);
@@ -84,7 +85,8 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             question.setMenuId(form.getMenuId());
             question.setKeyword(resultMap.get("keyword"));
             try {
-                questionService.insertMongoQuestion((MongoQuestion) MongoConverter.entityToMongo(question));
+//                questionService.insertMongoQuestion((MongoQuestion) MongoConverter.entityToMongo(question));
+                questionService.insertQuestion(question);
                 count.set(count.get() + 1);
                 messagingTemplate.convertAndSend("/topic/progress/" + random, count.get() + ":" + total.getAndIncrement());
                 System.out.println(question);

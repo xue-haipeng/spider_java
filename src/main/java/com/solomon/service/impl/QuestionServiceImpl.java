@@ -2,6 +2,7 @@ package com.solomon.service.impl;
 
 import com.solomon.domain.MongoQuestion;
 import com.solomon.domain.Question;
+import com.solomon.mapper.QuestionMapper;
 import com.solomon.repository.QuestionRepo;
 import com.solomon.repository.mongo.MongoQuestionRepo;
 import com.solomon.service.QuestionService;
@@ -25,6 +26,9 @@ public class QuestionServiceImpl implements QuestionService {
     @Autowired
     MongoQuestionRepo mongoQuestionRepo;
 
+    @Autowired
+    QuestionMapper questionMapper;
+
     @Override
     public void insertQuestion(Question question) {
         question.setCreatedTime(new Date());
@@ -32,7 +36,8 @@ public class QuestionServiceImpl implements QuestionService {
         question.setStatus(1);
         question.setScore(0);
         try {
-            questionRepo.save(question);
+//            questionRepo.save(question);   // Spring Data JPA Solution
+            questionMapper.insertByQuestion(question);    // Mybatis Solution
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

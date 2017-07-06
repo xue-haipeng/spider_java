@@ -26,7 +26,8 @@ repositories {
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.data:spring-data-jpa:1.11.4.RELEASE')
+//	compile('org.springframework.data:spring-data-jpa:1.11.4.RELEASE')
+	compile("org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.0")
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	// jsoup HTML parser library @ https://jsoup.org/
 	compile 'org.jsoup:jsoup:1.10.3'
