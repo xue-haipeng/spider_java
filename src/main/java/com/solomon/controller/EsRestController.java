@@ -1,13 +1,12 @@
 package com.solomon.controller;
 
-import com.solomon.repository.elasticsearch.FormDataRepo;
-import com.solomon.vo.FormData;
+import com.solomon.repository.elasticsearch.ArticleFormRepo;
+import com.solomon.repository.elasticsearch.QuestionFormRepo;
+import com.solomon.vo.ArticleForm;
+import com.solomon.vo.QuestionForm;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -20,22 +19,51 @@ import java.util.List;
 public class EsRestController {
 
     @Autowired
-    FormDataRepo formDataRepo;
+    ArticleFormRepo articleFormRepo;
 
-    @GetMapping("/insertFormData")
-    public String insertFormData(@Valid FormData formData) {
-        FormData result = formDataRepo.save(formData);
+    @Autowired
+    QuestionFormRepo questionFormRepo;
+
+    @GetMapping("/insertArticleForm")
+    public String insertFormData(@Valid ArticleForm articleForm) {
+        ArticleForm result = articleFormRepo.save(articleForm);
         return result != null && !StringUtils.isEmpty(result.getUrl()) ? "OK" : "Failed";
     }
 
-    @GetMapping("/deleteFormData")
-    public void deleteFormData(@RequestParam String id) {
-        formDataRepo.delete(id);
+    @GetMapping("/insertQuestionForm")
+    public String insertFormData(@Valid QuestionForm questionForm) {
+        QuestionForm result = questionFormRepo.save(questionForm);
+        return result != null && !StringUtils.isEmpty(result.getUrl()) ? "OK" : "Failed";
     }
 
-    @GetMapping("/queryFormData")
-    public List<FormData> queryFormData(@RequestParam String url) {
-        return formDataRepo.findByUrl(url);
+    @GetMapping("/deleteArticleForm")
+    public void deleteArticleForm(@RequestParam String id) {
+        articleFormRepo.delete(id);
+    }
+
+    @GetMapping("/deleteQuestionForm")
+    public void deleteQuestionForm(@RequestParam String id) {
+        questionFormRepo.delete(id);
+    }
+
+    @GetMapping("/queryArticleForm")
+    public List<ArticleForm> queryArticleForm(@RequestParam String url) {
+        return articleFormRepo.findByUrlStartingWith(url);
+    }
+
+    @GetMapping("/queryArticleFormById/{id}")
+    public ArticleForm queryArticleFormById(@PathVariable String id) {
+        return articleFormRepo.findOne(id);
+    }
+
+    @GetMapping("/queryQuestionForm")
+    public List<QuestionForm> queryQeustionForm(@RequestParam String url) {
+        return questionFormRepo.findByUrlStartingWith(url);
+    }
+
+    @GetMapping("/queryQuestionFormById/{id}")
+    public QuestionForm queryQuestionFormById(@PathVariable String id) {
+        return questionFormRepo.findOne(id);
     }
 
 }

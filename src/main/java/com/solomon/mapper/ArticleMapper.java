@@ -15,7 +15,7 @@ import java.util.List;
 @Mapper
 public interface ArticleMapper {
 
-    @Insert("INSERT INTO spider_wx_article(title, content, keyword, menu_id, author_id, weight, status, score, created_time, updated_time," +
+    @Insert("INSERT INTO spider_wx_article_1(title, content, keyword, menu_id, author_id, weight, status, score, created_time, updated_time," +
             " published_time) VALUES (#{title}, #{content}, #{keyword}, #{menuId}, #{authorId}, #{weight}, #{status}, #{score}, #{createdTime}, " +
             "#{updatedTime}, #{publishedTime})")
     int insertByArticle(Article article);

@@ -10,10 +10,7 @@ import javax.validation.constraints.Min;
 /**
  * Created by xuehaipeng on 2017/7/4.
  */
-@Document(indexName = "customer", type = "customer", shards = 1, replicas = 0, refreshInterval = "-1")
 public class FormData {
-    @Id
-    private String id;
     @URL
     private String url;
     @Min(1)
@@ -170,8 +167,7 @@ public class FormData {
     @Override
     public String toString() {
         return "FormData{" +
-                "id:'" + id + '\'' +
-                ", url:'" + url + '\'' +
+                "url:'" + url + '\'' +
                 ", startIndex:" + startIndex +
                 ", endIndex:" + endIndex +
                 ", extractArea:'" + extractArea + '\'' +

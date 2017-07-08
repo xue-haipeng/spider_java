@@ -26,18 +26,18 @@
     </div>
 </div><!-- modal -->
 <div class="row" style="margin-top: 3%; margin-left: 3%;">
-    <form class="col m8" th:action="@{/article}" th:object="${articleForm}" method="post">
+    <form class="col m6" th:action="@{/article}" th:object="${articleForm}" method="post">
         <div class="row">
             <div class="input-field col m7">
                 <input th:field="*{url}" id="url" type="url" class="validate" />
                 <label for="url">URL</label>
             </div>
-            <div class="input-field col m1">
+            <div class="input-field col m3">
                 <input th:field="*{menuId}" id="menuId" type="number" class="validate" />
                 <label for="menuId">MenuId</label>
             </div>
         </div>
-        <div class="row col m10">
+        <div class="row col m12">
             <div class="input-field col m2">
                 <input th:field="*{startIndex}" id="startIndex" type="number" class="validate" th:errorclass="invalid" />
                 <label for="startIndex">Start Index</label>
@@ -59,7 +59,7 @@
                 <div th:if="${#fields.hasErrors('linkPosition')}" th:errors="*{linkPosition}" class="red-text">Error</div>
             </div>
         </div>
-        <div class="row col m9">
+        <div class="row col m12">
             <div class="input-field col m2">
                 <input th:field="*{title}" id="title" type="text" class="validate" />
                 <label for="title">Title</label>
@@ -108,7 +108,7 @@
                 <label for="excluded2">Exclude 2</label>
             </div>
         </div>
-        <div class="row col m8" style="text-align: right;">
+        <div class="row col m12" style="text-align: right;">
             <div class="col m3" >
                 <button id="submit" class="btn waves-effect waves-light" style="margin-left: 3%; margin-top: 2%;" type="submit" name="action">Submit
                     <i class="material-icons right">send</i>
@@ -119,28 +119,45 @@
                     <i class="material-icons right">send</i>
                 </button>
             </div>
+            <div class="col m3" >
+                <button id="save" class="btn waves-effect waves-light" style="margin-left: 2%; margin-top: 2%;" type="button">Save
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
         </div>
     </form>
 
-    <div class="col m4">
+    <div class="col m6">
         <button id="show" class="btn btn-default" type="button">Show Progress</button>
-        <p id="progress" class="m4" style="margin-top: 7%;">当前进度：
+        <p id="progress" class="col m4">当前进度：
             <span id="cur_count" style="margin-left: 1%; margin-right: 1%; color: darkcyan; font-size: large;"></span> /
             <span id="total" style="margin-left: 1%; margin-right: 4%;"></span> 本次总量：
             <span id="all_sessions" style="margin-left: 1%; color: #03a9f4; font-size: large;"></span>
         </p>
-        <p class="m4" style="margin-top: 2%;">当前页面：
-            <span id="cur_page" style="margin: 1%; font-size: large; color: #aa00ff"></span> /
-            <span id="total_page" style="margin: 1%; font-size: large; color: #f06292;"></span>
+        <p class="col m4">当前页面：
+            <span id="cur_page" style="margin-left: 1%; margin-right: 1%; font-size: large; color: #aa00ff"></span> /
+            <span id="total_page" style="margin-left: 1%; margin-right: 1%; font-size: large; color: #f06292;"></span>
 
         </p>
-        <div class="progress progress-striped active" style="margin-top: 7%; width: 95%;">
+        <div class="progress progress-striped active" style="margin-top: 4%; width: 92%;">
             <div class="progress-bar progress-bar-success" role="progressbar"
                  aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
             </div>
         </div>
-        <div style="margin-top: 7%; width: 95%;">
-
+        <div style="margin-top: 5%; width: 95%;">
+            <div class="input-field col m8">
+                <input id="check_url" type="url" class="validate" />
+                <label for="check_url">Check URL</label>
+            </div>
+            <button id="check_button" class="btn waves-effect waves-light" style="margin-left: 2%; margin-top: 2%;" type="button" onclick="checkForm()">Check
+                <i class="material-icons right">send</i>
+            </button>
+        </div>
+        <div class="col m11" style="font-size: smaller;">
+            <table id="conversation" class="table table-striped">
+                <tbody id="result">
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -154,12 +171,12 @@
 <script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
 <script th:src="@{/js/collect-test.js}"></script>
 <script th:src="@{/js/show-progress.js}"></script>
+<script th:src="@{/js/elasticsearch.js}"></script>
 
 <script>
     $(function() {
         $('select').material_select();
     });
-
 </script>
 </body>
 </html>

@@ -17,9 +17,10 @@ function testFech(type) {
     var exclude2 = $("#excluded2").val();
     if (type == 0) {
         var content = $("#content").val();
+        var content2 = $("#content2").val();
         var data = {"url": url, "startIndex": startIndex, "endIndex": endIndex, "extractArea": extractArea,
             "linkPosition": linkPosition, "menuId": menuId, "title": title, "pubDate1": pubDate1, "pubDate2": pubDate2,
-            "pubDate3": pubDate3, "keyword": keyword, "content": content, "exclude1": exclude1, "exclude2": exclude2};
+            "pubDate3": pubDate3, "keyword": keyword, "content": content, "content2": content2, "exclude1": exclude1, "exclude2": exclude2};
         $.post("/testArticleFetch", data, function(data,status){
             // alert(data.toString());
             $("#modal_title").text(data.title);
@@ -46,7 +47,7 @@ function testFech(type) {
     }
 }
 
-$(document).ready(function() {
+$(function() {
     $('select').material_select();
 
     $('#article_test').click(function(){

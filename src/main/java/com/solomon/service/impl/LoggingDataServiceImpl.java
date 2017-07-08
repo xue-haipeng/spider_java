@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 /**
  * Created by xuehaipeng on 2017/6/13.
@@ -172,9 +173,16 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             if (!StringUtils.isEmpty(questionForm.getExcluded2())) {
                 question.select(questionForm.getExcluded2()).first().remove();
             }
-            answer = doc.select(questionForm.getAnswer()).first();
             resultMap.put("question", question.html());
+            answer = doc.select(questionForm.getAnswer()).first();
             if (answer != null) {
+                if (answer.children().size() > 3) {
+                    final int size = answer.children().size();
+                    for (int i = 3; i < size; i ++) {
+                        answer.children().last().remove();
+                    }
+//                    IntStream.range(4, answer.children().size()).forEach(i -> answer.children().last().remove());
+                }
                 resultMap.put("answer", answer.html());
             }
         }

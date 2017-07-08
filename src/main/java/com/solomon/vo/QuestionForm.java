@@ -1,12 +1,16 @@
 package com.solomon.vo;
 
-import com.solomon.vo.FormData;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 /**
  * Created by xuehaipeng on 2017/7/4.
  */
+@Document(indexName = "question_form")
 public class QuestionForm extends FormData {
+    @Id
+    private String id;
     @NotBlank
     private String question;
     private String answer;
@@ -30,8 +34,9 @@ public class QuestionForm extends FormData {
     @Override
     public String toString() {
         return "QuestionForm{" +
-                "question='" + question + '\'' +
+                "id='" + id + '\'' +
+                ", question='" + question + '\'' +
                 ", answer='" + answer + '\'' +
-                '}';
+                "} " + super.toString();
     }
 }

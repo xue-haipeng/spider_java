@@ -47,8 +47,8 @@ public class Question extends ZixunEntity {
     public String toString() {
         return "Question{" +
                 "id=" + id +
-                ", question='" + question + '\'' +
-                ", answer='" + answer + '\'' +
-                '}';
+                ", question='" + question.substring(0, 50) + '\'' +
+                ", answer='" + answer.substring(0, 50) + '\'' +
+                "} " + super.toString();
     }
 }

@@ -39,7 +39,7 @@ public class Article extends ZixunEntity implements Serializable {
     public String toString() {
         return "Article{" +
                 "id=" + id +
-                ", content='" + content + '\'' +
-                '}';
+                ", content='" + content.substring(0, 100) + '\'' +
+                "} " + super.toString();
     }
 }

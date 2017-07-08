@@ -16,16 +16,15 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.stream.IntStream;
 
 /**
  * Created by xuehaipeng on 2017/6/12.
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
 public class JsoupTest2 {
-
+/*
     @Autowired
-    ArticleService articleService;
+    ArticleService articleService;*/
 
     @Test
     public void test1() throws IOException {
@@ -57,5 +56,21 @@ public class JsoupTest2 {
         article.setContent(content.html());
         article.setMenuId(11L);
 //        articleService.insertArticle(article);
+    }
+
+    @Test
+    public void test2() throws IOException {
+        String url = "http://www.itjingyan.com/q_117915.html";
+        Document doc = Jsoup.connect(url).get();
+        Element answer = doc.select("div.mod-body.aw-feed-list").first();
+        if (answer.children().size() > 4) {
+            System.out.println("#########  " + answer.children().size() + "  *************");
+            IntStream.range(4, answer.children().size()).forEach(i -> answer.children().last().remove());
+        }
+/*        for (int i = 5; i < answer.children().size(); i ++) {
+            answer.children().last().remove();
+            System.out.println("------------------ " + answer.children().size());
+        }*/
+        System.out.println("--------------  " + answer.children().size());
     }
 }
