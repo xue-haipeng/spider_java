@@ -15,6 +15,14 @@ public class QuestionForm extends FormData {
     private String question;
     private String answer;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getQuestion() {
         return question;
     }

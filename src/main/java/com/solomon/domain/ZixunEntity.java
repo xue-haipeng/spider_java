@@ -1,11 +1,17 @@
 package com.solomon.domain;
 
+import javax.persistence.*;
 import java.util.Date;
 
 /**
  * Created by xuehaipeng on 2017/7/4.
  */
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class ZixunEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    private Long id;
     private String title;  // 标题
     private String keyword;  // 关键词
     private Long menuId;  // 最低一级栏目的id
@@ -16,6 +22,14 @@ public class ZixunEntity {
     private Date createdTime;
     private Date updatedTime;
     private Date publishedTime;  // 发布日期
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -99,8 +113,9 @@ public class ZixunEntity {
 
     @Override
     public String toString() {
-        return "Question{" +
-                "title='" + title + '\'' +
+        return "ZixunEntity{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
                 ", keyword='" + keyword + '\'' +
                 ", menuId=" + menuId +
                 ", authorId=" + authorId +

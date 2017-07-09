@@ -32,6 +32,6 @@ spring:
             port: 9200
 
 server:
-    port: 8080
+    port: 8000
 
 

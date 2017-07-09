@@ -14,18 +14,18 @@ import java.io.Serializable;
 public class Article extends ZixunEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
+/*    @Id
     @GeneratedValue
-    private Long id;
+    private Long id;*/
     private String content;  //  内容
 
-    public void setId(Long id) {
+/*    public void setId(Long id) {
         this.id = id;
     }
 
     public Long getId() {
         return this.id;
-    }
+    }*/
 
     public void setContent(String content) {
         this.content = content;
@@ -38,7 +38,7 @@ public class Article extends ZixunEntity implements Serializable {
     @Override
     public String toString() {
         return "Article{" +
-                "id=" + id +
+//                "id=" + id +
                 ", content='" + content.substring(0, 100) + '\'' +
                 "} " + super.toString();
     }

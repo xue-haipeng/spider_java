@@ -30,9 +30,6 @@ public class PrdDataSendTest {
     private static ThreadLocal<Integer> count = ThreadLocal.withInitial(() -> 1);
 
     @Autowired
-    ArticleRepo articleRepo;
-
-    @Autowired
     ArticleMapper articleMapper;
 
     @Autowired

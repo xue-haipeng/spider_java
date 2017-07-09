@@ -31,15 +31,48 @@ function save2Es(type) {
         $.getJSON("/testQuestionFetch", data);
     }
 }
+
+function domainURI(str){
+    var durl=/http:\/\/([^\/]+)\//i;
+    domain = str.match(durl);
+    return domain[1];
+}
+
+function applyForm(form_id) {
+    var queryUrl = form_id.getAttribute("id");
+    $.get("/es/queryArticleFormById/" + queryUrl, function (data) {
+        $("#url").val(data.url);
+        $("#startIndex").val(data.startIndex);
+        $("#endIndex").val(data.endIndex);
+        $("#extractArea").val(data.extractArea);
+        $("#linkPosition").val(data.linkPosition);
+        $("#menuId").val(data.menuId);
+        $("#title").val(data.title);
+        $("#pubDate1").val(data.pubDate1);
+        $("#pubDate2").val(data.pubDate2);
+        $("#pubDate3").val(data.pubDate3);
+        $("#keyword").val(data.keyword);
+        $("#excluded1").val(data.exclude1);
+        $("#excluded2").val(data.exclude2);
+        if (data.type == 0) {
+            $("#content").val(data.content);
+            $("#content2").val(data.content2);
+        } else if (data.type == 1) {
+            $("#question").val(data.question);
+            $("#answer").val(data.answer);
+        }
+    })
+}
+
 function checkForm() {
-    var url = $("#check_url").val();
+    var url = domainURI($("#check_url").val());
     var href = window.location.href;
     if (href.endsWith("/article")) {
         $.get("/es/queryArticleForm", {"url": url}, function (data) {
             $("#result").html("");
             $.each(data, function (i, form) {
                 $("#result").append("<tr><td>" + form.url + "</td><td><a href='javascript:void(0)' id='"
-                    + form.id + "'>Apply</a> | <a href='/es/deleteArticleForm?id='" + form.id + "'>Delete</a>" +"</td></tr>")
+                    + form.id + "' onclick='applyForm(" + form.id + ")'>Apply</a> | <a href='/es/deleteArticleForm?id='" + form.id + "'>Delete</a>" +"</td></tr>")
             })
         })
     } else if (href.endsWith("/question")) {
@@ -47,7 +80,7 @@ function checkForm() {
             $("#result").html("");
             $.each(data, function (i, form) {
                 $("#result").append("<tr><td>" + form.url + "</td><td><a href='javascript:void(0)' id='"
-                    + form.id + "'>Apply</a> | <a href='/es/deleteQuestionForm?id='" + form.id + "'>Delete</a>" +"</td></tr>")
+                    + form.id + "' onclick='applyForm(" + form.id + ")'>Apply</a> | <a href='/es/deleteQuestionForm?id='" + form.id + "'>Delete</a></td></tr>")
             })
         })
     }
@@ -63,31 +96,5 @@ $(function() {
             save2Es(1);
         }
     });
-    
-    $('td>a[id]').click(function () {
-        var id = this.attr("id");
-        $.get("/es/queryArticleFormById/" + id, function (data) {
-            $("#url").val(data.url);
-            $("#startIndex").val(data.startIndex);
-            $("#endIndex").val(data.endIndex);
-            $("#extractArea").val(data.extractArea);
-            $("#linkPosition").val(data.linkPosition);
-            $("#menuId").val(data.menuId);
-            $("#title").val(data.title);
-            $("#pubDate1").val(data.pubDate1);
-            $("#pubDate2").val(data.pubDate2);
-            $("#pubDate3").val(data.pubDate3);
-            $("#keyword").val(data.keyword);
-            $("#excluded1").val(data.exclude1);
-            $("#excluded2").val(data.exclude2);
-            if (data.type == 0) {
-                $("#content").val(data.content);
-                $("#content2").val(data.content2);
-            } else if (data.type == 1) {
-                $("#question").val(data.question);
-                $("#answer").val(data.answer);
-            }
 
-        })
-    })
 });

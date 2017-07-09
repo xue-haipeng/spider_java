@@ -13,19 +13,19 @@ import java.util.Date;
 @Table(name = "spider_wx_question")
 public class Question extends ZixunEntity {
     private static final long serialVersionUID = 1L;
-    @Id
+/*    @Id
     @GeneratedValue
-    private Long id;  // id
+    private Long id;  // id*/
     private String question;  // 问题
     private String answer;  // 答案
 
-    public Long getId() {
+/*    public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
+    }*/
 
     public String getQuestion() {
         return question;
@@ -46,7 +46,7 @@ public class Question extends ZixunEntity {
     @Override
     public String toString() {
         return "Question{" +
-                "id=" + id +
+//                "id=" + id +
                 ", question='" + question.substring(0, 50) + '\'' +
                 ", answer='" + answer.substring(0, 50) + '\'' +
                 "} " + super.toString();

@@ -167,22 +167,22 @@ public class FormData {
     @Override
     public String toString() {
         return "FormData{" +
-                "url:'" + url + '\'' +
-                ", startIndex:" + startIndex +
-                ", endIndex:" + endIndex +
-                ", extractArea:'" + extractArea + '\'' +
-                ", linkPosition:'" + linkPosition + '\'' +
-                ", menuId:" + menuId +
-                ", title:'" + title + '\'' +
-                ", title2:'" + title2 + '\'' +
-                ", pubDate1:'" + pubDate1 + '\'' +
-                ", pubDate2:'" + pubDate2 + '\'' +
-                ", pubDate3:'" + pubDate3 + '\'' +
-                ", keyword:'" + keyword + '\'' +
-                ", exFirst:" + exFirst +
-                ", exLast:" + exLast +
-                ", excluded2:'" + excluded2 + '\'' +
-                ", type:" + type +
+                "url='" + url + '\'' +
+                ", startIndex=" + startIndex +
+                ", endIndex=" + endIndex +
+                ", extractArea='" + extractArea + '\'' +
+                ", linkPosition='" + linkPosition + '\'' +
+                ", menuId=" + menuId +
+                ", title='" + title + '\'' +
+                ", title2='" + title2 + '\'' +
+                ", pubDate1='" + pubDate1 + '\'' +
+                ", pubDate2='" + pubDate2 + '\'' +
+                ", pubDate3='" + pubDate3 + '\'' +
+                ", keyword='" + keyword + '\'' +
+                ", exFirst=" + exFirst +
+                ", exLast=" + exLast +
+                ", excluded2='" + excluded2 + '\'' +
+                ", type=" + type +
                 '}';
     }
 }
