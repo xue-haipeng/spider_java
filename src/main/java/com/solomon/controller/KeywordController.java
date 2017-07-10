@@ -1,7 +1,9 @@
 package com.solomon.controller;
 
 import com.solomon.config.RabbitMqConfig;
+import com.solomon.domain.ArticleForPost;
 import com.solomon.domain.Keyword;
+import com.solomon.repository.ArticleForPostRepo;
 import com.solomon.vo.KeywordForm;
 import com.solomon.domain.PageEntity;
 import com.solomon.service.KeywordService;
@@ -25,10 +27,12 @@ import java.util.stream.Collectors;
 @Controller
 public class KeywordController {
 
-    private final Sort sort = new Sort(Sort.Direction.ASC, "id");
-
     private final String QUERY_URL = "http://man.wxlink.jd.com/dataCollect/getKeywordList?pageSize={1}&pageNow={2}";
     private final String INSERT_URL = "http://man.wxlink.jd.com/dataCollect/secondaryKeyword";
+
+    final String URL = "http://man.wxlink.jd.com/dataCollect";
+    final Sort sort = new Sort(Sort.Direction.ASC, "id");
+    private static ThreadLocal<Integer> count = ThreadLocal.withInitial(() -> 1);
 
     @Autowired
     KeywordService keywordService;
@@ -38,6 +42,9 @@ public class KeywordController {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    ArticleForPostRepo articleForPostRepo;
 
     @RequestMapping("/insertSecondaryKw")
     public void insertKeywords(int total) {
@@ -87,6 +94,26 @@ public class KeywordController {
             rabbitTemplate.convertAndSend(RabbitMqConfig.queueName, "KW: " + kw);
         });
         return "redirect:/";
+    }
+
+    @RequestMapping("/postQatToPrd")
+    @ResponseBody
+    public String sendToPrd() {
+        int totalPage = 1_50000 +1;
+        for (int i = 1842; i < 1842; i++) {   // int i = 1885;  2153
+            System.out.println("-------------- 第 " + i + " 页 ------------------");
+            Pageable pageable = new PageRequest(i,100, sort);
+            List<ArticleForPost> articles = articleForPostRepo.findAll(pageable).getContent();
+            articles.forEach(article -> restTemplate.postForObject(URL, article, ArticleForPost.class));
+
+            articles.stream().filter(article -> !article.getContent().equals("<p></p>")).forEach(article -> {
+                restTemplate.postForObject(URL, article, ArticleForPost.class);
+                count.set(count.get() + 1);
+                System.out.print(count.get() + ":" + article.getId() + " , ");
+            });
+            System.out.println();
+        }
+        return "OK";
     }
 
 }

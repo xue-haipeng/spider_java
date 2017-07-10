@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Created by xuehaipeng on 2017/6/13.
  */
 @Entity
-@Table(name = "spider_wx_article")
+@Table(name = "spider_wx_article_1")
 public class Article extends ZixunEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

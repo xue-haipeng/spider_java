@@ -4,10 +4,18 @@ spring:
 #        properties:
 #            hibernate.format_sql: true
     datasource:
-#        url: jdbc:mysql://192.168.194.76:3306/solomon_info
-        url: jdbc:mysql://localhost:3306/zixun_spider
+        url: jdbc:mysql://192.168.194.76:3306/solomon_info
         username: root
-        password: root
+        password: 123456
+#        local:
+#            url: jdbc:mysql://localhost:3306/zixun_spider
+#            username: root
+#            password: root
+#        qat:
+#            url: jdbc:mysql://192.168.194.76:3306/solomon_info
+#            username: root
+#            password: 123456
+
     mybatis:
         type-aliases-package: com.solomon.domain
         configuration:
@@ -32,6 +40,6 @@ spring:
             port: 9200
 
 server:
-    port: 8000
+    port: 8010
 
 
