@@ -9,6 +9,6 @@ import java.util.Map;
  */
 public interface LoggingDataService {
 
-    void insertArticleOrQuestion(FormData form, String url, String random);
+    Integer insertArticleOrQuestion(FormData form, String url, String random);
     Map<String, String> fetchArticleOrQuestion(FormData form, String url);
 }

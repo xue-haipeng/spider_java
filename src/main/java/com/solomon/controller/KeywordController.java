@@ -1,5 +1,6 @@
 package com.solomon.controller;
 
+import com.solomon.common.Constant;
 import com.solomon.config.RabbitMqConfig;
 import com.solomon.domain.ArticleForPost;
 import com.solomon.domain.Keyword;
@@ -27,15 +28,12 @@ import java.util.stream.Collectors;
 @Controller
 public class KeywordController {
 
-    private final String QUERY_URL = "http://man.wxlink.jd.com/dataCollect/getKeywordList?pageSize={1}&pageNow={2}";
     private final String INSERT_URL = "http://man.wxlink.jd.com/dataCollect/secondaryKeyword";
 
-    final String URL = "http://man.wxlink.jd.com/dataCollect";
-    final Sort sort = new Sort(Sort.Direction.ASC, "id");
     private static ThreadLocal<Integer> count = ThreadLocal.withInitial(() -> 1);
 
     @Autowired
-    KeywordService keywordService;
+    private KeywordService keywordService;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -44,13 +42,13 @@ public class KeywordController {
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    ArticleForPostRepo articleForPostRepo;
+    private ArticleForPostRepo articleForPostRepo;
 
     @RequestMapping("/insertSecondaryKw")
     public void insertKeywords(int total) {
         final int totalPage = total/100 + 2;
         for (int i = 1; i < totalPage; i++) {
-            Pageable pageable = new PageRequest(i,10, sort);
+            Pageable pageable = new PageRequest(i,10, Constant.DB_ASC_SORT);
             List<String> keywords = keywordService.getKeywordList(pageable);
             keywords.forEach(kw -> {
                 List<Keyword> keywordList = keywordService.findSecondaryKeywords(kw);
@@ -61,7 +59,7 @@ public class KeywordController {
 
     @GetMapping("/secondaryKeyword")
     public void secondaryKw(@RequestParam int pageSize, @RequestParam int pageNow, @RequestParam(value = "pageOffset", defaultValue = "0") int pageOffset) {
-        PageEntity<LinkedHashMap> keywordPageEntity = this.restTemplate.getForObject(QUERY_URL.replace("{1}", Integer.toString(pageSize))
+        PageEntity<LinkedHashMap> keywordPageEntity = this.restTemplate.getForObject(Constant.KEYWORD_QUERY_URL.replace("{1}", Integer.toString(pageSize))
                 .replace("{2}", Integer.toString(pageNow)), PageEntity.class);
         List<LinkedHashMap> keywords = keywordPageEntity.getDatas();
         List<String> keywordList = keywords.stream().map(kw -> (String)kw.get("keyword")).collect(Collectors.toList());
@@ -79,7 +77,7 @@ public class KeywordController {
 
     @PostMapping("/secondaryKeyword")
     public String secondaryKwPost(@Valid KeywordForm keywordForm) {
-        PageEntity<LinkedHashMap> keywordPageEntity = this.restTemplate.getForObject(QUERY_URL.replace("{1}", "20")
+        PageEntity<LinkedHashMap> keywordPageEntity = this.restTemplate.getForObject(Constant.KEYWORD_QUERY_URL.replace("{1}", "20")
                 .replace("{2}", Integer.toString(keywordForm.getStartPage())), PageEntity.class);
         List<LinkedHashMap> keywords = keywordPageEntity.getDatas();
         List<String> keywordList = keywords.stream().map(kw -> (String)kw.get("keyword")).collect(Collectors.toList());
@@ -100,14 +98,14 @@ public class KeywordController {
     @ResponseBody
     public String sendToPrd() {
         int totalPage = 1_50000 +1;
-        for (int i = 1842; i < 1842; i++) {   // int i = 1885;  2153
+        for (int i = 1842; i < totalPage; i++) {   // int i = 1885;  2153
             System.out.println("-------------- 第 " + i + " 页 ------------------");
-            Pageable pageable = new PageRequest(i,100, sort);
+            Pageable pageable = new PageRequest(i,100, Constant.DB_ASC_SORT);
             List<ArticleForPost> articles = articleForPostRepo.findAll(pageable).getContent();
-            articles.forEach(article -> restTemplate.postForObject(URL, article, ArticleForPost.class));
+            articles.forEach(article -> restTemplate.postForObject(Constant.ARTICLE_SEND_URL, article, ArticleForPost.class));
 
             articles.stream().filter(article -> !article.getContent().equals("<p></p>")).forEach(article -> {
-                restTemplate.postForObject(URL, article, ArticleForPost.class);
+                restTemplate.postForObject(Constant.ARTICLE_SEND_URL, article, ArticleForPost.class);
                 count.set(count.get() + 1);
                 System.out.print(count.get() + ":" + article.getId() + " , ");
             });

@@ -8,5 +8,6 @@ import com.solomon.domain.Question;
  */
 public interface QuestionService {
     void insertQuestion(Question question);
+    void sentToPrd(Question question);
     MongoQuestion insertMongoQuestion(MongoQuestion mongoQuestion);
 }

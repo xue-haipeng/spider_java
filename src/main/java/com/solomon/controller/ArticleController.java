@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.SocketTimeoutException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -32,7 +33,6 @@ import java.util.regex.Pattern;
 @Controller
 public class ArticleController {
     private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
-    private static Map<String, Integer> randomNums = new HashMap<>();   //  for storing random numbers of each browser
 
     @Autowired
     LoggingDataService loggingDataService;
@@ -41,23 +41,23 @@ public class ArticleController {
     SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/article")
-    public String articleForm(@Valid ArticleForm articleForm) {
+    @ResponseBody
+    public Map<String, Integer> articleForm(@Valid ArticleForm articleForm) {
         try {
-            extractAndFetch(articleForm);
+            return extractAndFetch(articleForm);
         } catch (InterruptedException | NoSuchAlgorithmException | IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return "redirect:/article";
     }
 
     @PostMapping("/question")
-    public String questionForm(@Valid QuestionForm form) {
+    @ResponseBody
+    public Map<String, Integer> questionForm(@Valid QuestionForm form) {
         try {
-            extractAndFetch(form);
+            return extractAndFetch(form);
         } catch (InterruptedException | NoSuchAlgorithmException | IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return "redirect:/article";
     }
 
     @PostMapping("/testArticleFetch")
@@ -78,7 +78,13 @@ public class ArticleController {
         try {
             doc = Jsoup.connect(url).timeout(3000).get();
         } catch (Exception e) {
-            logger.error("无法连接到网址： {}", e.getMessage(), e);
+            if (e instanceof SocketTimeoutException) {
+                try {
+                    doc = Jsoup.connect(url).timeout(3000).get();
+                } catch (IOException e1) {
+                    logger.error("无法连接到网址： {}", e.getMessage(), e);
+                }
+            }
         }
         Element candidate = doc.select(form.getExtractArea()).first();
         Elements links = candidate.select(form.getLinkPosition());
@@ -103,12 +109,15 @@ public class ArticleController {
         return new Progress(count);
     }*/
 
-    private void extractAndFetch(FormData form) throws InterruptedException, NoSuchAlgorithmException, IOException {
+    private Map<String, Integer> extractAndFetch(FormData form) throws InterruptedException, NoSuchAlgorithmException, IOException {
         System.out.println(form);
+        Map<String, Integer> map = new HashMap<>();
         MessageDigest md5 = MessageDigest.getInstance("MD5");
         md5.update(form.getUrl().getBytes());
         String md5key = new BigInteger(1, md5.digest()).toString(16);
+        int curPage = 0;
         for (int i = form.getStartIndex(); i < form.getEndIndex(); i++) {
+            curPage = i;
             logger.info("-------- 第 {}/{} 页 --------", i, form.getEndIndex());
             messagingTemplate.convertAndSend("/topic/pages/" + md5key, i + ":" + form.getEndIndex());
             String url = form.getUrl().replace("{}", Integer.toString(i));
@@ -138,6 +147,9 @@ public class ArticleController {
                 }
             });
         }
+        map.put("curPage", curPage);
+        map.put("totalPage", form.getEndIndex());
+        return map;
     }
 
 }

@@ -38,7 +38,7 @@ public class PrdDataSendTest {
     @Test
     public void testInsertPrd() {
         int totalPage = 1_500_000/10 +1;
-        for (int i = 1842; i < 1842; i++) {   // int i = 1885;  2153
+        for (int i = 1842; i < totalPage; i++) {   // int i = 1885;  2153
             System.out.println("-------------- 第 " + i + " 页 ------------------");
             Pageable pageable = new PageRequest(i,100, sort);
             List<ArticleForPost> articles = articleForPostRepo.findAll(pageable).getContent();

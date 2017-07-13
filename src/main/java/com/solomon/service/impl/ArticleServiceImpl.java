@@ -1,6 +1,8 @@
 package com.solomon.service.impl;
 
+import com.solomon.common.Constant;
 import com.solomon.domain.Article;
+import com.solomon.domain.ArticleForPost;
 import com.solomon.domain.MongoArticle;
 import com.solomon.mapper.ArticleMapper;
 import com.solomon.repository.ArticleRepo;
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 
@@ -29,6 +32,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     ArticleMapper articleMapper;
 
+    @Autowired
+    RestTemplate restTemplate;
+
     @Override
     public void insertArticle(Article article) {
         article.setCreatedTime(new Date());
@@ -41,7 +47,11 @@ public class ArticleServiceImpl implements ArticleService {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+    }
 
+    @Override
+    public void sentToPrd(Article article) {
+        restTemplate.postForObject(Constant.ARTICLE_SEND_URL, article, ArticleForPost.class);
     }
 
     @Override

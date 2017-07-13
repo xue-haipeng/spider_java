@@ -10,6 +10,7 @@ public interface ArticleService {
 
     void insertArticle(Article article);
 
+    void sentToPrd(Article article);
 //    List<CompletableFuture<Article>> fetchArticleAsync(ArticleForm form);
     MongoArticle insertMongoArticle(MongoArticle mongoArticle);
 

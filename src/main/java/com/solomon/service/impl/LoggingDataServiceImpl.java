@@ -47,7 +47,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
     private static AtomicInteger total = new AtomicInteger(1);
 
     @Override
-    public void insertArticleOrQuestion(FormData form, String url, String random) {
+    public Integer insertArticleOrQuestion(FormData form, String url, String random) {
 
         Map<String, String> resultMap = fetchArticleOrQuestion(form, url);
         Pattern pattern = Pattern.compile("\\d{4}[-|\\/|年|\\.]\\d{1,2}[-|\\/|月|\\.]\\d{1,2}([日|号])?");
@@ -70,7 +70,8 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             article.setMenuId(form.getMenuId());
             article.setKeyword(resultMap.get("keyword"));
             try {
-                articleService.insertArticle(article);
+//                articleService.insertArticle(article);
+                articleService.sentToPrd(article);
 //                articleService.insertMongoArticle((MongoArticle) MongoConverter.entityToMongo(article));
                 count.set(count.get() + 1);
                 messagingTemplate.convertAndSend("/topic/progress/" + random, count.get() + ":" + total.getAndIncrement());
@@ -89,6 +90,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             try {
 //                questionService.insertMongoQuestion((MongoQuestion) MongoConverter.entityToMongo(question));
                 questionService.insertQuestion(question);
+//                questionService.sentToPrd(question);
                 count.set(count.get() + 1);
                 messagingTemplate.convertAndSend("/topic/progress/" + random, count.get() + ":" + total.getAndIncrement());
                 System.out.println(question);
@@ -96,7 +98,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
                 logger.error(e.getMessage());
             }
         }
-
+        return count.get();
     }
 
     /**

@@ -1,0 +1,43 @@
+spring:
+    jpa:
+        show-sql: true
+    datasource:
+        url: jdbc:mysql://192.168.194.76:3306/solomon_info
+        username: root
+        password: 123456
+#        local:
+#            url: jdbc:mysql://localhost:3306/zixun_spider
+#            username: root
+#            password: root
+#        qat:
+#            url: jdbc:mysql://192.168.194.76:3306/solomon_info
+#            username: root
+#            password: 123456
+
+    mybatis:
+        type-aliases-package: com.solomon.domain
+        configuration:
+            map-underscore-to-camel-case: true
+            default-fetch-size: 100
+            default-statement-timeout: 30
+
+    rabbitmq:
+        host: 121.42.192.175
+        port: 5672
+        username: guest
+        password: guest
+
+    data:
+        mongodb:
+            host: 121.42.192.175
+            port: 27017
+            database: spider_article
+
+        elasticsearch:
+            host: 121.42.192.175
+            port: 9200
+
+server:
+    port: 8000
+
+
