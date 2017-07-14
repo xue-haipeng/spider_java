@@ -77,7 +77,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
                 messagingTemplate.convertAndSend("/topic/progress/" + random, count.get() + ":" + total.getAndIncrement());
                 System.out.println(article);
             } catch (Exception e) {
-                logger.error(e.getMessage());
+                logger.error("send article to prd failed: {}" ,e.getMessage());
             }
         } else if (form instanceof QuestionForm){
             Question question = new Question();
@@ -95,7 +95,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
                 messagingTemplate.convertAndSend("/topic/progress/" + random, count.get() + ":" + total.getAndIncrement());
                 System.out.println(question);
             } catch (Exception e) {
-                logger.error(e.getMessage());
+                logger.error("send question to prd failed: {}" ,e.getMessage());
             }
         }
         return count.get();

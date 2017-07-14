@@ -5404,11 +5404,12 @@ button.btn-floating {
   clear: both;
   color: rgba(0, 0, 0, 0.87);
   cursor: pointer;
-  min-height: 50px;
-  line-height: 1.5rem;
+  min-height: 30px;
+  line-height: 1.2rem;
   width: 100%;
   text-align: left;
   text-transform: none;
+  font-size: 1rem;
 }
 
 .dropdown-content li:hover, .dropdown-content li.active, .dropdown-content li.selected {
@@ -6636,7 +6637,7 @@ form p:last-child {
   height: 20px;
   width: 20px;
   background-color: transparent;
-  border: 2px solid #5a5a5a;
+  border: 1px solid rgba(78, 127, 122, 0.71);
   top: 0px;
   z-index: 0;
 }
@@ -6862,6 +6863,7 @@ select:disabled {
 .select-dropdown li.optgroup {
   color: rgba(0, 0, 0, 0.3);
   background-color: transparent;
+  font-size: smaller;
 }
 
 .prefix ~ .select-wrapper {
@@ -6891,6 +6893,7 @@ select:disabled {
 
 .select-dropdown li.optgroup > span {
   color: rgba(0, 0, 0, 0.4);
+  font-size: smaller;
 }
 
 .select-dropdown li.optgroup ~ li.optgroup-option {

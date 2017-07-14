@@ -41,6 +41,7 @@ function domainURI(str){
 function applyForm(form_id) {
     var queryUrl = form_id.getAttribute("id");
     $.get("/es/queryArticleFormById/" + queryUrl, function (data) {
+        Materialize.updateTextFields();
         $("#url").val(data.url);
         $("#startIndex").val(data.startIndex);
         $("#endIndex").val(data.endIndex);

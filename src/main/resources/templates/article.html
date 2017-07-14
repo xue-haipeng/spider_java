@@ -7,6 +7,11 @@
     <link rel="stylesheet" th:href="@{/css/materialize.css}" />
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"  />
 
+    <style>
+        ul li span {
+            font-size: smaller;
+        }
+    </style>
 </head>
 <body>
 <!-- Modal -->
@@ -25,17 +30,90 @@
         <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
     </div>
 </div><!-- modal -->
+<!-- Modal for Exception -->
+<div class="modal fade" id="modalExcept" tabindex="-1" role="dialog" aria-labelledby="modalExceptLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="modalExceptLabel">测试出错</h4>
+    </div>
+    <div class="modal-body">
+        <p>异常：<span id="modal_message"></span></p>
+        <p>堆栈：<span id="modal_stack"></span> </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+    </div>
+</div><!-- modal for Exception -->
 <div class="row" style="margin-top: 3%; margin-left: 3%;">
-    <form class="col m6" th:action="@{/article}" th:object="${articleForm}" method="post">
+    <form class="col m6" method="post">
         <div class="row">
-            <div class="input-field col m7">
-                <input th:field="*{url}" id="url" type="url" class="validate" />
+            <div class="input-field col m6">
+                <input id="url" type="url" class="validate" />
                 <label for="url">URL</label>
             </div>
-            <div class="input-field col m3">
-                <input th:field="*{menuId}" id="menuId" type="number" class="validate" />
-                <label for="menuId">MenuId</label>
+            <div class="input-field col m2">
+                <select id="topMenu" class="select">
+                    <option value="" disabled="disabled" selected="selected">Category</option>
+                    <option value="1">金融</option>
+                    <option value="2">零售制造</option>
+                    <option value="3">人工智能</option>
+                    <option value="4">应用开发</option>
+                    <option value="5">大数据</option>
+                    <option value="6">云计算</option>
+                    <option value="7">问答社区</option>
+                </select>
+                <label>Category</label>
             </div>
+            <div class="input-field col m2">
+                <select id="menuId" class="select">
+                    <option class="menuId menuId_1" value="" disabled="disabled" selected="selected">Choose MenuId</option>
+                    <option class="menuId menuId_1" value="8">宏观资讯</option>
+                    <option class="menuId menuId_1 hide" value="9">中资银行</option>
+                    <option class="menuId menuId_1" value="10">外资银行</option>
+                    <option class="menuId menuId_1" value="11">保险</option>
+                    <option class="menuId menuId_1" value="12">理财</option>
+                    <option class="menuId menuId_1" value="13">P2P</option>
+                    <option class="menuId menuId_1" value="14">网贷</option>
+                    <option class="menuId menuId_1" value="15">互联网金融</option>
+                    <option class="menuId menuId_1" value="40">基金</option>
+                    <option class="menuId menuId_1" value="42">股票</option>
+
+                    <option class="menuId menuId_2" value="16">行业资讯</option>
+                    <option class="menuId menuId_2" value="17">公关</option>
+                    <option class="menuId menuId_2" value="18">广告</option>
+                    <option class="menuId menuId_2" value="19">会展</option>
+                    <option class="menuId menuId_2" value="20">品牌营销</option>
+                    <option class="menuId menuId_2" value="41">民用</option>
+                    <option class="menuId menuId_2" value="43">工业用</option>
+                    <option class="menuId menuId_2" value="44">商用</option>
+
+                    <option class="menuId menuId_3" value="21">行业新闻</option>
+                    <option class="menuId menuId_3" value="22">技术动态</option>
+
+                    <option class="menuId menuId_4" value="23">开发者资讯</option>
+                    <option class="menuId menuId_4" value="24">技术文章</option>
+                    <option class="menuId menuId_4" value="25">开发者活动</option>
+
+                    <option class="menuId menuId_5" value="26">业界资讯</option>
+                    <option class="menuId menuId_5" value="27">开源技术</option>
+                    <option class="menuId menuId_5" value="28">应用案例</option>
+                    <option class="menuId menuId_5" value="29">技术方案</option>
+
+                    <option class="menuId menuId_6" value="30">云资讯</option>
+                    <option class="menuId menuId_6" value="31">云应用</option>
+                    <option class="menuId menuId_6" value="32">云技术</option>
+                    <option class="menuId menuId_6" value="33">云安全</option>
+
+                    <option class="menuId menuId_7" value="34">金融</option>
+                    <option class="menuId menuId_7" value="35">零售制造</option>
+                    <option class="menuId menuId_7" value="36">人工智能</option>
+                    <option class="menuId menuId_7" value="37">应用开发</option>
+                    <option class="menuId menuId_7" value="38">大数据</option>
+                    <option class="menuId menuId_7" value="39">云计算</option>
+                </select>
+                <label>MenuId</label>
+            </div>
+
         </div>
         <div class="row col m12">
             <div class="input-field col m2">
@@ -83,28 +161,30 @@
         </div>
         <div class="row col m10">
             <div class="input-field col m2">
-                <input th:field="*{keyword}" id="keyword" type="text" class="validate" />
+                <input id="keyword" type="text" class="validate" />
                 <label for="keyword">Keyword</label>
             </div>
             <div class="input-field col m2">
-                <input th:field="*{content}" id="content" type="text" class="validate" />
+                <input id="content" type="text" class="validate" />
                 <label for="content">Content</label>
             </div>
             <div class="input-field col m2">
-                <input th:field="*{content2}" id="content2" type="text" />
+                <input id="content2" type="text" />
                 <label for="content2">Content2</label>
             </div>
 
-            <div class="input-field col m2">
+            <div class="col m2">
                 <p>
-                    <input id="exFirst" th:field="*{exFirst}" type="checkbox" /><label for="exFirst">Ex.First</label>
+                    <input id="exFirst" type="checkbox" class="filled-in" name="exFirst" />
+                    <label for="exFirst">Ex.First</label>
                 </p>
                 <p>
-                    <input id="exLast" th:field="*{exLast}" type="checkbox" /><label for="exLast">Ex.Last</label>
+                    <input id="exLast" type="checkbox" class="filled-in" name="exLast" />
+                    <label for="exLast">Ex.Last</label>
                 </p>
             </div>
             <div class="input-field col m2">
-                <input th:field="*{excluded2}" id="excluded2" type="text" class="validate" />
+                <input id="excluded2" type="text" class="validate" />
                 <label for="excluded2">Exclude 2</label>
             </div>
         </div>
@@ -163,21 +243,21 @@
     </div>
 </div>
 
-
 <script th:src="@{/js/jquery-2.1.1.min.js}"></script>
 <script th:src="@{/js/materialize.min.js}"></script>
-<script th:src="@{/js/bootstrap.min.js}" src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!--<script th:src="@{/js/bootstrap.min.js}" src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
 <script th:src="@{/js/jquery.md5.js}"></script>
 <script th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
 <script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
+<script th:src="@{/js/linked-dropdown.js}"></script>
 <script th:src="@{/js/collect-test.js}"></script>
 <script th:src="@{/js/show-progress.js}"></script>
 <script th:src="@{/js/elasticsearch.js}"></script>
-
 <script>
-    $(function() {
-        $('select').material_select();
+    $(document).ready(function() {
+        $('select.select').material_select();
     });
 </script>
+
 </body>
 </html>

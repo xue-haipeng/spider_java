@@ -1,9 +1,11 @@
 package com.solomon.controller;
 
+import com.solomon.common.Constant;
 import com.solomon.vo.ArticleForm;
 import com.solomon.vo.FormData;
 import com.solomon.vo.QuestionForm;
 import com.solomon.service.LoggingDataService;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -63,7 +65,14 @@ public class ArticleController {
     @PostMapping("/testArticleFetch")
     @ResponseBody
     public Map<String, String> articleTest(ArticleForm articleForm) {
-        return testFech(articleForm);
+        Map<String, String> exception = new HashMap<>();
+        try {
+            return testFech(articleForm);
+        } catch (Exception e) {
+            exception.put("exceptMessage", e.toString());
+            exception.put("exceptBody", ExceptionUtils.getStackTrace(e));
+            return exception;
+        }
     }
 
     @PostMapping("/testQuestionFetch")
@@ -88,8 +97,7 @@ public class ArticleController {
         }
         Element candidate = doc.select(form.getExtractArea()).first();
         Elements links = candidate.select(form.getLinkPosition());
-        Pattern pattern = Pattern.compile("^([hH][tT]{2}[pP]://|[hH][tT]{2}[pP][sS]://)(([A-Za-z0-9-~]+).)+(com|cn|net|org|biz|info|cc|tv)");
-        Matcher matcher = pattern.matcher(url);
+        Matcher matcher = Constant.URL_DOMAIN_PATTEN.matcher(url);
         matcher.find();
         Element hrefElement = links.first().toString().startsWith("<a ") ? links.first() : links.first().child(0);
         String href = hrefElement.attr("href").startsWith("http") ? hrefElement.attr("href") : matcher.group(0) + hrefElement.attr("href");
@@ -102,12 +110,6 @@ public class ArticleController {
         Map<String, String> resultMap = loggingDataService.fetchArticleOrQuestion(form, href);
         return resultMap;
     }
-
-/*    @MessageMapping("/hello")
-    @SendTo("/topic/progress")
-    public Progress progress(Integer count) {
-        return new Progress(count);
-    }*/
 
     private Map<String, Integer> extractAndFetch(FormData form) throws InterruptedException, NoSuchAlgorithmException, IOException {
         System.out.println(form);
@@ -130,8 +132,7 @@ public class ArticleController {
             }
             Element candidate = form.getExtractArea().startsWith("<") ? doc.getElementsByTag(form.getExtractArea().replace("<","")).first() : doc.select(form.getExtractArea()).first();
             Elements links = candidate.select(form.getLinkPosition());
-            Pattern pattern = Pattern.compile("^([hH][tT]{2}[pP]://|[hH][tT]{2}[pP][sS]://)(([A-Za-z0-9-~]+).)+(com|cn|net|org|biz|info|cc|tv)");
-            Matcher matcher = pattern.matcher(url);
+            Matcher matcher = Constant.URL_DOMAIN_PATTEN.matcher(url);
             matcher.find();
             links.forEach(link -> {
                 try {

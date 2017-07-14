@@ -23,11 +23,16 @@ function testFech(type) {
             "pubDate3": pubDate3, "keyword": keyword, "content": content, "content2": content2, "exclude1": exclude1, "exclude2": exclude2};
         $.post("/testArticleFetch", data, function(data,status){
             // alert(data.toString());
-            $("#modal_title").text(data.title);
-            $("#modal_date").text(data.originDate);
-            $("#modal_keyword").text(data.keyword);
-            $("#modal_content").html(data.content);
-            $('#testModal').modal('show')
+            if (data.exceptMessage != undefined) {
+                $("#modal_message").text(data.exceptMessage);
+                $("#modal_stack").text(data.exceptBody)
+            } else {
+                $("#modal_title").text(data.title);
+                $("#modal_date").text(data.originDate);
+                $("#modal_keyword").text(data.keyword);
+                $("#modal_content").html(data.content);
+                $('#testModal').modal('show')
+            }
         });
     } else {
         var question = $("#question").val();
@@ -48,7 +53,6 @@ function testFech(type) {
 }
 
 $(function() {
-    $('select').material_select();
 
     $('#article_test').click(function(){
         testFech(0);

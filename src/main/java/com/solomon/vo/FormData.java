@@ -21,8 +21,7 @@ public class FormData {
     private String extractArea;
     @NotBlank
     private String linkPosition;
-    @Min(8)
-    private long menuId;
+    private Long menuId;
     @NotBlank
     private String title;
     private String title2;
@@ -76,11 +75,11 @@ public class FormData {
         this.linkPosition = linkPosition;
     }
 
-    public long getMenuId() {
+    public Long getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(long menuId) {
+    public void setMenuId(Long menuId) {
         this.menuId = menuId;
     }
 

@@ -1,5 +1,6 @@
 package com.solomon;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -39,7 +40,6 @@ public class OrdinaryTest {
         if (dateArr[2].length() == 1) {
             dateArr[2] = "0" + dateArr[2];
         }
-
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         java.sql.Date date = java.sql.Date.valueOf(org.apache.commons.lang3.StringUtils.join(dateArr, "-"));
 
@@ -95,5 +95,15 @@ public class OrdinaryTest {
         map.put("a", 1);
         map.put("a", 2);
         System.out.println(map.get("a"));
+    }
+
+    @Test
+    public void test4() {
+        try {
+            throw new RuntimeException("test");
+        } catch (Exception e) {
+            System.out.println("*********************** " + e.getMessage());
+            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^ " + e.toString());
+        }
     }
 }
