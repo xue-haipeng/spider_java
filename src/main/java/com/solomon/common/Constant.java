@@ -14,4 +14,5 @@ public interface Constant {
     String KEYWORD_QUERY_URL = "http://man.wxlink.jd.com/dataCollect/getKeywordList?pageSize={1}&pageNow={2}";
     String SECONDARY_KW_INSERT_URL = "http://man.wxlink.jd.com/dataCollect/secondaryKeyword";
     Pattern URL_DOMAIN_PATTEN = Pattern.compile("^([hH][tT]{2}[pP]://|[hH][tT]{2}[pP][sS]://)(([A-Za-z0-9-~]+).)+(com|cn|net|org|biz|info|cc|tv)");
+    int PAGE_SIZE_DB_QUERY = 100;
 }

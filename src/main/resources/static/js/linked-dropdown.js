@@ -3,7 +3,10 @@
  */
 var currCategory=0;
 $(function(){
-    $("li>span").css("font-size", "1rem");
+    $("select").click(function () {
+        $("li>span").css("font-size", "1rem");
+    });
+
     $("#topMenu").change(function(){
         $("li>span").css("font-size", "1rem");
         var category = $(this).val();

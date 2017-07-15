@@ -5,16 +5,23 @@ import com.solomon.domain.Article;
 import com.solomon.domain.ArticleForPost;
 import com.solomon.domain.MongoArticle;
 import com.solomon.mapper.ArticleMapper;
+import com.solomon.repository.ArticleForPostRepo;
 import com.solomon.repository.ArticleRepo;
 import com.solomon.repository.mongo.MongoArticleRepo;
 import com.solomon.service.ArticleService;
+import org.hibernate.exception.JDBCConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Created by xuehaipeng on 2017/6/13.
@@ -23,6 +30,8 @@ import java.util.Date;
 public class ArticleServiceImpl implements ArticleService {
 
     private static final Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
+    private static ThreadLocal<Integer> count = ThreadLocal.withInitial(() -> 1);  // counter for the number of articles sent to prd
+
     @Autowired
     ArticleRepo articleRepo;
 
@@ -31,6 +40,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     ArticleMapper articleMapper;
+
+    @Autowired
+    ArticleForPostRepo articleForPostRepo;
 
     @Autowired
     RestTemplate restTemplate;
@@ -52,6 +64,60 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void sentToPrd(Article article) {
         restTemplate.postForObject(Constant.ARTICLE_SEND_URL, article, ArticleForPost.class);
+    }
+
+    @Override
+    public void sentToPrd(int startPage, int endPage) {
+/*        for (int i = startPage; i < endPage; i++) {   // int i = 2918;  2153
+
+        }*/
+        IntStream.rangeClosed(startPage, endPage).forEach(i -> {
+            System.out.println("-------------- 第 " + i + " 页 ------------------");
+            Pageable pageable = new PageRequest(i,Constant.PAGE_SIZE_DB_QUERY, Constant.DB_ASC_SORT);
+            List<ArticleForPost> articles = null;
+            try {
+                articles = articleForPostRepo.findAll(pageable).getContent();
+            } catch (JDBCConnectionException e) {
+                try {
+                    Thread.sleep(60_000);
+                    articles = articleForPostRepo.findAll(pageable).getContent();
+                } catch (InterruptedException | JDBCConnectionException ie) {
+                    try {
+                        Thread.sleep(600_000);
+                        articles = articleForPostRepo.findAll(pageable).getContent();
+                    } catch (InterruptedException | JDBCConnectionException ee) {
+                        logger.error("Connect to QAT DB failed after 2 times retry");
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            articles.stream().filter(article -> !article.getContent().equals("<p></p>")).forEach(article -> {
+                try {
+                    restTemplate.postForObject(Constant.ARTICLE_SEND_URL, article, ArticleForPost.class);
+                } catch (ResourceAccessException e) {
+                    try {
+                        Thread.sleep(60_000);  // wait 1 min to see if network connection is available
+                        restTemplate.postForObject(Constant.ARTICLE_SEND_URL, article, ArticleForPost.class);
+                    } catch (InterruptedException | ResourceAccessException ie) {
+                        try {
+                            Thread.sleep(600_000);  // wait 10 min to see if network connection is available
+                            restTemplate.postForObject(Constant.ARTICLE_SEND_URL, article, ArticleForPost.class);
+                        } catch (InterruptedException | ResourceAccessException ee) {
+                            try {
+                                Thread.sleep(900_000);  // wait 10 min to see if network connection is available
+                                restTemplate.postForObject(Constant.ARTICLE_SEND_URL, article, ArticleForPost.class);
+                            } catch (InterruptedException | ResourceAccessException ex) {
+                                logger.error("Connection to man.wxlink.jd.com failed after retry 3 times");
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                }
+                count.set(count.get() + 1);
+                System.out.print(count.get() + ":" + article.getId() + " , ");
+            });
+            System.out.println();
+        });
     }
 
     @Override
