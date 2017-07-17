@@ -38,7 +38,7 @@ public class PrdDataSendTest {
 
     @Test
     public void testInsertPrd() {
-        articleService.sentToPrd(2918, 10000);
+        articleService.sentToPrd(4369, 10000);
     }
 
     @Test

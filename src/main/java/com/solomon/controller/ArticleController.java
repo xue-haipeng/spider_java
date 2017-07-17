@@ -1,6 +1,7 @@
 package com.solomon.controller;
 
 import com.solomon.common.Constant;
+import com.solomon.service.ArticleService;
 import com.solomon.vo.ArticleForm;
 import com.solomon.vo.FormData;
 import com.solomon.vo.QuestionForm;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
@@ -26,6 +29,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +44,9 @@ public class ArticleController {
     LoggingDataService loggingDataService;
 
     @Autowired
+    ArticleService articleService;
+
+    @Autowired
     SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/article")
@@ -50,6 +57,13 @@ public class ArticleController {
         } catch (InterruptedException | NoSuchAlgorithmException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @RequestMapping("/article/sendToPrd")
+    @ResponseBody
+    public String sendToPrdDb(@RequestParam int startPage, @RequestParam int endPage) {
+        CompletableFuture.supplyAsync(() -> articleService.sentToPrd(startPage, endPage));
+        return "submitted";
     }
 
     @PostMapping("/question")

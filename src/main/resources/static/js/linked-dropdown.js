@@ -47,7 +47,7 @@ $(function(){
                 }
                 break;
             default:
-                console.log("");
+                console.log("failed to judge category");
         }
     });
     $("#topMenu").change();

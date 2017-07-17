@@ -25,13 +25,14 @@ function testFech(type) {
             // alert(data.toString());
             if (data.exceptMessage != undefined) {
                 $("#modal_message").text(data.exceptMessage);
-                $("#modal_stack").text(data.exceptBody)
+                $("#modal_stack").text(data.exceptBody);
+                $('#modalExcept').modal('show');
             } else {
                 $("#modal_title").text(data.title);
                 $("#modal_date").text(data.originDate);
                 $("#modal_keyword").text(data.keyword);
                 $("#modal_content").html(data.content);
-                $('#testModal').modal('show')
+                $('#testModal').modal('show');
             }
         });
     } else {
@@ -42,12 +43,18 @@ function testFech(type) {
             "pubDate3": pubDate3, "keyword": keyword, "question": question, "answer": answer, "exclude1": exclude1, "exclude2": exclude2};
         $.post("/testQuestionFetch", data, function(data,status){
             // alert(data.toString());
-            $("#modal_title").text(data.title);
-            $("#modal_date").text(data.originDate);
-            $("#modal_keyword").text(data.keyword);
-            $("#modal_question").html(data.question);
-            $("#modal_answer").html(data.answer);
-            $('#testModal').modal('show')
+            if (data.exceptMessage != undefined) {
+                $("#modal_message").text(data.exceptMessage);
+                $("#modal_stack").text(data.exceptBody);
+                $('#modalExcept').modal('show');
+            } else {
+                $("#modal_title").text(data.title);
+                $("#modal_date").text(data.originDate);
+                $("#modal_keyword").text(data.keyword);
+                $("#modal_question").html(data.question);
+                $("#modal_answer").html(data.answer);
+                $('#testModal').modal('show');
+            }
         });
     }
 }

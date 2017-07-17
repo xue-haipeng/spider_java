@@ -19,8 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.PersistenceException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 /**
@@ -30,7 +34,8 @@ import java.util.stream.IntStream;
 public class ArticleServiceImpl implements ArticleService {
 
     private static final Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
-    private static ThreadLocal<Integer> count = ThreadLocal.withInitial(() -> 1);  // counter for the number of articles sent to prd
+    private static ThreadLocal<Integer> count = ThreadLocal.withInitial(() -> 0);  // counter for the number of articles sent to prd
+    private static final AtomicInteger total = new AtomicInteger(0);  // total articles sent to prd of all thread sessions
 
     @Autowired
     ArticleRepo articleRepo;
@@ -67,25 +72,22 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public void sentToPrd(int startPage, int endPage) {
-/*        for (int i = startPage; i < endPage; i++) {   // int i = 2918;  2153
-
-        }*/
+    public Map<String, Integer> sentToPrd(int startPage, int endPage) {
         IntStream.rangeClosed(startPage, endPage).forEach(i -> {
             System.out.println("-------------- 第 " + i + " 页 ------------------");
             Pageable pageable = new PageRequest(i,Constant.PAGE_SIZE_DB_QUERY, Constant.DB_ASC_SORT);
             List<ArticleForPost> articles = null;
             try {
                 articles = articleForPostRepo.findAll(pageable).getContent();
-            } catch (JDBCConnectionException e) {
+            } catch (PersistenceException | JDBCConnectionException e) {
                 try {
                     Thread.sleep(60_000);
                     articles = articleForPostRepo.findAll(pageable).getContent();
-                } catch (InterruptedException | JDBCConnectionException ie) {
+                } catch (InterruptedException | PersistenceException | JDBCConnectionException ie) {
                     try {
                         Thread.sleep(600_000);
                         articles = articleForPostRepo.findAll(pageable).getContent();
-                    } catch (InterruptedException | JDBCConnectionException ee) {
+                    } catch (InterruptedException | PersistenceException | JDBCConnectionException ee) {
                         logger.error("Connect to QAT DB failed after 2 times retry");
                         throw new RuntimeException(e);
                     }
@@ -114,10 +116,15 @@ public class ArticleServiceImpl implements ArticleService {
                     }
                 }
                 count.set(count.get() + 1);
+                total.getAndIncrement();
                 System.out.print(count.get() + ":" + article.getId() + " , ");
             });
             System.out.println();
         });
+        Map<String, Integer> map = new ConcurrentHashMap<>();
+        map.put("count", count.get());
+        map.put("total", total.get());
+        return map;
     }
 
     @Override

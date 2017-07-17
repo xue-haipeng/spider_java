@@ -44,7 +44,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
 
     private static ThreadLocal<Integer> count = ThreadLocal.withInitial(() -> 0);
 
-    private static AtomicInteger total = new AtomicInteger(1);
+    private static final AtomicInteger total = new AtomicInteger(1);
 
     @Override
     public Integer insertArticleOrQuestion(FormData form, String url, String random) {
