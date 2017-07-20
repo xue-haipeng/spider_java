@@ -4,6 +4,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
@@ -105,5 +109,15 @@ public class OrdinaryTest {
             System.out.println("*********************** " + e.getMessage());
             System.out.println("^^^^^^^^^^^^^^^^^^^^^^^ " + e.toString());
         }
+    }
+
+    @Test
+    public void test5() throws URISyntaxException, MalformedURLException {
+        String url = "http://man.wxlink.jd.com/dataCollect/article";
+        URL url1 = new URL(url);
+        String domain = url1.getHost();
+        System.out.println(domain);
+        System.out.println(url1.getRef());
+
     }
 }

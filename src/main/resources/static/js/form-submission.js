@@ -123,7 +123,7 @@ function transToMenuId(menuNum) {
 $(function () {
     $("#submit").click(function () {
         var url = $("#url").val();
-        var menuNum = $("ul:eq(1) li.selected").index();
+        var menuNum = $("ul:eq(1) li.selected").index()==-1 ? $("ul:eq(1) li.active").index() : $("ul:eq(1) li.selected").index();
         var menuId = transToMenuId(menuNum);
         var startIndex = parseInt($("#startIndex").val());
         var endIndex = parseInt($("#endIndex").val());

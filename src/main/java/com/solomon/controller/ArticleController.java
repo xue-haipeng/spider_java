@@ -24,7 +24,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -91,11 +93,11 @@ public class ArticleController {
 
     @PostMapping("/testQuestionFetch")
     @ResponseBody
-    public Map<String, String> questionTest(QuestionForm questionForm) {
+    public Map<String, String> questionTest(QuestionForm questionForm) throws MalformedURLException {
         return testFech(questionForm);
     }
 
-    private Map<String, String> testFech(FormData form) {
+    private Map<String, String> testFech(FormData form) throws MalformedURLException {
         String url = form.getUrl().replace("{}", Integer.toString(form.getStartIndex()));
         Document doc = null;
         try {
@@ -111,15 +113,16 @@ public class ArticleController {
         }
         Element candidate = doc.select(form.getExtractArea()).first();
         Elements links = candidate.select(form.getLinkPosition());
-        Matcher matcher = Constant.URL_DOMAIN_PATTEN.matcher(url);
-        matcher.find();
         Element hrefElement = links.first().toString().startsWith("<a ") ? links.first() : links.first().child(0);
-        String href = hrefElement.attr("href").startsWith("http") ? hrefElement.attr("href") : matcher.group(0) + hrefElement.attr("href");
+        String href = hrefElement.attr("href");
+//        Matcher matcher = Constant.URL_DOMAIN_PATTEN.matcher(url);
+//        matcher.find();   hangs because of the "horrible backtrack"
+        URL uri = new URL(url);
         if (href.endsWith("index.shtml") && links.first().nextElementSibling() != null) {
             href = links.first().nextElementSibling().attr("href");   // <li>标签含两个<a>
         }
         if (!href.startsWith("http")) {
-            href = matcher.group(0) + "/" + href;
+            href = uri.getHost() + "/" + href;
         }
         Map<String, String> resultMap = loggingDataService.fetchArticleOrQuestion(form, href);
         return resultMap;
@@ -146,15 +149,13 @@ public class ArticleController {
             }
             Element candidate = form.getExtractArea().startsWith("<") ? doc.getElementsByTag(form.getExtractArea().replace("<","")).first() : doc.select(form.getExtractArea()).first();
             Elements links = candidate.select(form.getLinkPosition());
-            Matcher matcher = Constant.URL_DOMAIN_PATTEN.matcher(url);
-            matcher.find();
+/*            Matcher matcher = Constant.URL_DOMAIN_PATTEN.matcher(url);
+            matcher.find();  // pool performance*/
+            URL uri = new URL(url);
             links.forEach(link -> {
                 try {
-                    String href = link.attr("href").startsWith("http") ? link.attr("href") : matcher.group(0) + link.select("a").attr("href");
+                    String href = link.attr("href").startsWith("http") ? link.attr("href") : uri.getHost() + link.select("a").attr("href");
 //                    String href = link.nextElementSibling().attr("href");   // <li>标签含两个<a>
-                    if (!href.startsWith("http")) {
-                        href = matcher.group(0) + href;
-                    }
                     loggingDataService.insertArticleOrQuestion(form, href, md5key);
                 } catch (Exception e) {
                     logger.error("文章解析出错：{}, baseURL: {}" , e.getMessage(), form.getUrl());

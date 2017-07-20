@@ -89,8 +89,8 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             question.setKeyword(resultMap.get("keyword"));
             try {
 //                questionService.insertMongoQuestion((MongoQuestion) MongoConverter.entityToMongo(question));
-                questionService.insertQuestion(question);
-//                questionService.sentToPrd(question);
+//                questionService.insertQuestion(question);
+                questionService.sentToPrd(question);
                 count.set(count.get() + 1);
                 messagingTemplate.convertAndSend("/topic/progress/" + random, count.get() + ":" + total.getAndIncrement());
                 System.out.println(question);
