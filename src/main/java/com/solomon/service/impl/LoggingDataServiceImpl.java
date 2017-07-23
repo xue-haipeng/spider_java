@@ -159,7 +159,8 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             if (!StringUtils.isEmpty(articleForm.getExcluded2())) {
                 content.select(articleForm.getExcluded2()).first().remove();
             }
-            resultMap.put("content", content.html());
+            final String regex_script = "<script[^>]*?>[\\s\\S]*?<\\/script>";
+            resultMap.put("content", content.html().replaceAll(regex_script, ""));
         } else if (form instanceof QuestionForm) {
             QuestionForm questionForm = (QuestionForm) form;
             question = doc.select(questionForm.getQuestion()).first();

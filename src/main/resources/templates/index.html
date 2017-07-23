@@ -5,40 +5,27 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" th:href="@{/css/material.icon.css}" />
     <link rel="stylesheet" th:href="@{/css/materialize.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"  />
 
 
 </head>
 <body>
 
 <div class="row" style="margin-top: 5%; margin-left: 3%;">
-    <form class="col m10" th:action="@{/secondaryKeyword}" th:object="${keywordForm}" method="post">
-        <div class="row">
-            <div class="input-field col m2">
-                <input th:field="*{startPage}" id="startPage" type="number" class="validate" th:errorclass="invalid" />
-                <label for="startPage">Start Page</label>
-                <div th:if="${#fields.hasErrors('startPage')}" th:errors="*{startPage}" class="red-text">Error</div>
-            </div>
-            <div class="input-field col m2">
-                <input th:field="*{endPage}" id="endPage" type="number" class="validate" th:errorclass="invalid" />
-                <label for="endPage">End Page</label>
-                <div th:if="${#fields.hasErrors('endPage')}" th:errors="*{endPage}" class="red-text">Error</div>
-            </div>
-            <div class="input-field col m2">
-                <input th:field="*{pageOffset}" id="pageOffset" type="number" class="validate" th:errorclass="invalid" />
-                <label for="pageOffset">Page Offset</label>
-                <div th:if="${#fields.hasErrors('pageOffset')}" th:errors="*{pageOffset}" class="red-text">Error</div>
-            </div>
-
-            <button class="btn waves-effect waves-light" style="margin-left: 2%; margin-top: 2%;" type="submit" name="action">Submit
-                <i class="material-icons right">send</i>
-            </button>
-
-        </div>
-    </form>
+    <button class="btn waves-effect waves-light" style="margin-left: 2%; margin-top: 2%;" type="button" name="action">Submit
+        <i class="material-icons right">send</i>
+    </button>
 </div>
 
 
 <script th:src="@{/js/jquery-2.1.1.min.js}"></script>
 <script th:src="@{/js/materialize.min.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+<script>
+    $(document).ready(function() {
+        $('select.select').material_select();
+        $("li>span").css("font-size", "1rem");
+    });
+</script>
 </body>
 </html>

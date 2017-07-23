@@ -87,6 +87,7 @@ public class ArticleController {
         } catch (Exception e) {
             exception.put("exceptMessage", e.toString());
             exception.put("exceptBody", ExceptionUtils.getStackTrace(e));
+            logger.error(ExceptionUtils.getStackTrace(e));
             return exception;
         }
     }
@@ -147,7 +148,8 @@ public class ArticleController {
                 Thread.sleep(6000L);
                 doc = Jsoup.connect(url).timeout(20_000).get();
             }
-            Element candidate = form.getExtractArea().startsWith("<") ? doc.getElementsByTag(form.getExtractArea().replace("<","")).first() : doc.select(form.getExtractArea()).first();
+            Element candidate = form.getExtractArea().startsWith("<") ? doc.getElementsByTag(form.getExtractArea()
+                    .replace("<","")).first() : doc.select(form.getExtractArea()).first();
             Elements links = candidate.select(form.getLinkPosition());
 /*            Matcher matcher = Constant.URL_DOMAIN_PATTEN.matcher(url);
             matcher.find();  // pool performance*/
