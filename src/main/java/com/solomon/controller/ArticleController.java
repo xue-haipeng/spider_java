@@ -6,6 +6,9 @@ import com.solomon.vo.ArticleForm;
 import com.solomon.vo.FormData;
 import com.solomon.vo.QuestionForm;
 import com.solomon.service.LoggingDataService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,10 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 /**
  * Created by xuehaipeng on 2017/6/23.
  */
-@Controller
+@RestController
 public class ArticleController {
     private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
 
@@ -51,8 +51,9 @@ public class ArticleController {
     @Autowired
     SimpMessagingTemplate messagingTemplate;
 
+    @ApiOperation(value = "Article采集接口", notes = "提交ArticleForm")
+    @ApiImplicitParam(name = "articleForm", value = "ArticleForm", required = true, dataType = "ArticleForm")
     @PostMapping("/article")
-    @ResponseBody
     public Map<String, Integer> articleForm(@Valid ArticleForm articleForm) {
         try {
             return extractAndFetch(articleForm);
@@ -61,25 +62,31 @@ public class ArticleController {
         }
     }
 
-    @RequestMapping("/article/sendToPrd")
-    @ResponseBody
-    public String sendToPrdDb(@RequestParam int startPage, @RequestParam int endPage) {
+    @ApiOperation(value = "Article发送接口", notes = "将Article发送到线上数据库")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startPage", value = "开始页", required = true, dataType = "int"),
+            @ApiImplicitParam(name = "endPage", value = "结束页", required = true, dataType = "int")
+    })
+    @GetMapping("/article/sendToPrd")
+    public String sendArticleToPrdDb(@RequestParam int startPage, @RequestParam int endPage) {
         CompletableFuture.supplyAsync(() -> articleService.sentToPrd(startPage, endPage));
         return "submitted";
     }
 
+    @ApiOperation(value = "Question采集接口", notes = "提交QuestionForm")
+    @ApiImplicitParam(name = "questionForm", value = "QuestionForm", required = true, dataType = "QuestionForm")
     @PostMapping("/question")
-    @ResponseBody
-    public Map<String, Integer> questionForm(@Valid QuestionForm form) {
+    public Map<String, Integer> questionForm(@Valid QuestionForm questionForm) {
         try {
-            return extractAndFetch(form);
+            return extractAndFetch(questionForm);
         } catch (InterruptedException | NoSuchAlgorithmException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @ApiOperation(value = "测试Article采集接口", notes = "")
+    @ApiImplicitParam(name = "articleForm", value = "ArticleForm", required = true, dataType = "ArticleForm")
     @PostMapping("/testArticleFetch")
-    @ResponseBody
     public Map<String, String> articleTest(ArticleForm articleForm) {
         Map<String, String> exception = new HashMap<>();
         try {
@@ -92,8 +99,9 @@ public class ArticleController {
         }
     }
 
+    @ApiOperation(value = "测试Question采集接口", notes = "")
+    @ApiImplicitParam(name = "questionForm", value = "QuestionForm", required = true, dataType = "QuestionForm")
     @PostMapping("/testQuestionFetch")
-    @ResponseBody
     public Map<String, String> questionTest(QuestionForm questionForm) throws MalformedURLException {
         return testFech(questionForm);
     }
@@ -127,6 +135,17 @@ public class ArticleController {
         }
         Map<String, String> resultMap = loggingDataService.fetchArticleOrQuestion(form, href);
         return resultMap;
+    }
+
+    @ApiOperation(value = "Question发送接口", notes = "将Question发送到线上数据库")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startPage", value = "开始页", required = true, dataType = "int"),
+            @ApiImplicitParam(name = "endPage", value = "结束页", required = true, dataType = "int")
+    })
+    @GetMapping("/question/sendToPrd")
+    public String sendQuestionToPrdDb(@RequestParam int startPage, @RequestParam int endPage) {
+        CompletableFuture.supplyAsync(() -> articleService.sentToPrd(startPage, endPage));
+        return "submitted";
     }
 
     private Map<String, Integer> extractAndFetch(FormData form) throws InterruptedException, NoSuchAlgorithmException, IOException {

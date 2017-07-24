@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class HomeController {
 
-    @RequestMapping("/")
+    @GetMapping(value = "/")
     public String home(KeywordForm keywordForm) {
 //        model.addAttribute("keywordForm", new KeywordForm());
         return "index";

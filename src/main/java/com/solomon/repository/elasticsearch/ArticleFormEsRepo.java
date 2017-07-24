@@ -11,7 +11,7 @@ import java.util.List;
  * Created by xuehaipeng on 2017/7/6.
  */
 @Repository
-public interface ArticleFormRepo extends ElasticsearchRepository<ArticleForm, String> {
+public interface ArticleFormEsRepo extends ElasticsearchRepository<ArticleForm, String> {
     List<ArticleForm> findByUrl(String url);
     List<ArticleForm> findByUrlStartingWith(String urlPrefix);
 

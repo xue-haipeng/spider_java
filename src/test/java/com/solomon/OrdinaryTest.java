@@ -12,10 +12,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.regex.Matcher;
@@ -119,5 +117,54 @@ public class OrdinaryTest {
         System.out.println(domain);
         System.out.println(url1.getRef());
 
+    }
+
+    @Test
+    public void test6() {
+        Date date = java.sql.Date.valueOf(LocalDate.parse("2017-07-23"));
+        System.out.println(date);
+    }
+
+    public CompletableFuture<String> asyncTask() {
+        System.out.println("asyncTask is invoked .............");
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(3000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("supplyAsync in asyncTask ...........");
+            return "Hello World !!!!!!!!";
+        });
+    }
+
+    public CompletableFuture<Integer> asyncCalc() {
+        System.out.println("asyncCalc is invoked ...............");
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(2000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("supplyAsync in asyncCalc ..............");
+            throw new RuntimeException("an exception");
+//            return 10;
+        });
+    }
+
+    @Test
+    public void test7() {
+        String result = asyncTask().thenCombine(asyncCalc(), (s, i) -> s + i).join();
+        System.out.println("********* " + result);
+    }
+
+    @Test
+    public void test8() {
+        try {
+            int num = asyncCalc().join();
+            System.out.println(num);
+        } catch (Exception e) {
+            System.out.println("Catched ....................... " + e.getMessage());
+        }
     }
 }

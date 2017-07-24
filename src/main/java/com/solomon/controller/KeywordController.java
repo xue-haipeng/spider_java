@@ -8,12 +8,12 @@ import com.solomon.repository.ArticleForPostRepo;
 import com.solomon.vo.KeywordForm;
 import com.solomon.domain.PageEntity;
 import com.solomon.service.KeywordService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,10 +25,9 @@ import java.util.stream.Collectors;
 /**
  * Created by xuehaipeng on 2017/6/13.
  */
-@Controller
+@RestController
+@RequestMapping("/kw")
 public class KeywordController {
-
-    private final String INSERT_URL = "http://man.wxlink.jd.com/dataCollect/secondaryKeyword";
 
     private static ThreadLocal<Integer> count = ThreadLocal.withInitial(() -> 1);
 
@@ -44,7 +43,7 @@ public class KeywordController {
     @Autowired
     private ArticleForPostRepo articleForPostRepo;
 
-    @RequestMapping("/insertSecondaryKw")
+    @GetMapping("/insertSecondaryKw")
     public void insertKeywords(int total) {
         final int totalPage = total/100 + 2;
         for (int i = 1; i < totalPage; i++) {

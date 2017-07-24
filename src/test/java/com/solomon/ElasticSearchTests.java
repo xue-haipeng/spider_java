@@ -1,6 +1,6 @@
 package com.solomon;
 
-import com.solomon.repository.elasticsearch.ArticleFormRepo;
+import com.solomon.repository.elasticsearch.ArticleFormEsRepo;
 import com.solomon.vo.ArticleForm;
 import com.solomon.vo.FormData;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import java.util.List;
 public class ElasticSearchTests {
 
     @Autowired
-    ArticleFormRepo articleFormRepo;
+    ArticleFormEsRepo articleFormEsRepo;
 
     @Test
     public void testEs() {
@@ -48,17 +48,17 @@ public class ElasticSearchTests {
         formData.setPubDate1("span.sdate");
         formData.setContent("div.content");
         formData.setType(0);
-        articleFormRepo.save(formData);
-        articleFormRepo.findAll().forEach(System.out::println);
+        articleFormEsRepo.save(formData);
+        articleFormEsRepo.findAll().forEach(System.out::println);
 //        System.out.println(formDataRepo.findOne("AV0XHo1gQuzSwRAkIXQd"));
     }
 
     @Test
     public void testQuery1() {
-        List<ArticleForm> list = articleFormRepo.findByUrlStartingWith("http://www.ofweek.com");
+        List<ArticleForm> list = articleFormEsRepo.findByUrlStartingWith("http://www.ofweek.com");
         list.forEach(System.out :: println);
         System.out.println("-------------------------------------------------------");
-        articleFormRepo.findAll().forEach(System.out :: println);
+        articleFormEsRepo.findAll().forEach(System.out :: println);
     }
 
 }
