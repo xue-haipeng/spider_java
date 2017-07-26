@@ -62,10 +62,10 @@ public class ArticleController {
         }
     }
 
-    @ApiOperation(value = "Article发送接口", notes = "将Article发送到线上数据库")
+    @ApiOperation(value = "Article发送异步接口", notes = "将Article发送到线上数据库")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startPage", value = "开始页", required = true, dataType = "int"),
-            @ApiImplicitParam(name = "endPage", value = "结束页", required = true, dataType = "int")
+            @ApiImplicitParam(name = "startPage", value = "开始页", required = true, dataType = "integer"),
+            @ApiImplicitParam(name = "endPage", value = "结束页", required = true, dataType = "integer")
     })
     @GetMapping("/article/sendToPrd")
     public String sendArticleToPrdDb(@RequestParam int startPage, @RequestParam int endPage) {
@@ -139,8 +139,8 @@ public class ArticleController {
 
     @ApiOperation(value = "Question发送接口", notes = "将Question发送到线上数据库")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startPage", value = "开始页", required = true, dataType = "int"),
-            @ApiImplicitParam(name = "endPage", value = "结束页", required = true, dataType = "int")
+            @ApiImplicitParam(name = "startPage", value = "开始页", required = true, dataType = "integer"),
+            @ApiImplicitParam(name = "endPage", value = "结束页", required = true, dataType = "integer")
     })
     @GetMapping("/question/sendToPrd")
     public String sendQuestionToPrdDb(@RequestParam int startPage, @RequestParam int endPage) {

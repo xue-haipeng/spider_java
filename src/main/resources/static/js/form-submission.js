@@ -2,6 +2,14 @@
  * Created by xuehaipeng on 2017/7/14.
  */
 function transToMenuId(menuNum) {
+    if (menuNum < 8) {
+        var literal = $("input.select-dropdown:eq(1)").val();
+        $("ul:eq(1) li").each(function(i) {
+            if (literal == $(this).text()) {
+                menuNum = $(this).index();
+            }
+        })
+    }
     switch (menuNum) {
         case 1:
             return 8;

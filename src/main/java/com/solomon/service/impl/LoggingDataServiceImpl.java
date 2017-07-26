@@ -48,7 +48,9 @@ public class LoggingDataServiceImpl implements LoggingDataService {
 
     @Override
     public Integer insertArticleOrQuestion(FormData form, String url, String random) {
-
+        if (form.getMenuId() == null) {
+            throw new RuntimeException("MenuId为空");
+        }
         Map<String, String> resultMap = fetchArticleOrQuestion(form, url);
         Pattern pattern = Pattern.compile("\\d{4}[-|\\/|年|\\.]\\d{1,2}[-|\\/|月|\\.]\\d{1,2}([日|号])?");
         Matcher matcher = pattern.matcher(resultMap.get("originDate"));

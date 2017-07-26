@@ -9,6 +9,7 @@ import com.solomon.vo.KeywordForm;
 import com.solomon.domain.PageEntity;
 import com.solomon.service.KeywordService;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,28 +57,29 @@ public class KeywordController {
         }
     }
 
+    @ApiOperation(value = "二级关键词采集发送接口", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageSize", value = "每页数量", required = true, dataType = "integer"),
+            @ApiImplicitParam(name = "startPage", value = "起始页码", required = true, dataType = "integer")
+    })
     @GetMapping("/secondaryKeyword")
-    public void secondaryKw(@RequestParam int pageSize, @RequestParam int pageNow, @RequestParam(value = "pageOffset", defaultValue = "0") int pageOffset) {
-        PageEntity<LinkedHashMap> keywordPageEntity = this.restTemplate.getForObject(Constant.KEYWORD_QUERY_URL.replace("{1}", Integer.toString(pageSize))
-                .replace("{2}", Integer.toString(pageNow)), PageEntity.class);
+    public void secondaryKw(@RequestParam int pageSize, @RequestParam int startPage) {
+        PageEntity<LinkedHashMap> keywordPageEntity = this.restTemplate.getForObject(Constant.KEYWORD_QUERY_URL.replace("{1}", String.valueOf(pageSize))
+                .replace("{2}", String.valueOf(startPage)), PageEntity.class);
         List<LinkedHashMap> keywords = keywordPageEntity.getDatas();
         List<String> keywordList = keywords.stream().map(kw -> (String)kw.get("keyword")).collect(Collectors.toList());
-        int count = 0;
-        keywordList.stream().skip(pageOffset).forEach(kw -> {
-//            restTemplate.postForObject(INSERT_URL, kw, String.class);
-            try {
-                Thread.sleep(400L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            rabbitTemplate.convertAndSend(RabbitMqConfig.queueName, "KW: " + kw);
+        keywordList.stream().forEach(kw -> {
+            restTemplate.postForObject(Constant.SECONDARY_KW_INSERT_URL, kw, String.class);
+//            rabbitTemplate.convertAndSend(RabbitMqConfig.queueName, "KW: " + kw);
         });
     }
 
+    @ApiOperation(value = "二级关键词采集发送接口", notes = "根据Form采集发送二级关键词")
+    @ApiImplicitParam(name = "keywordForm", value = "KeywordForm", required = true, dataType = "KeywordForm")
     @PostMapping("/secondaryKeyword")
     public String secondaryKwPost(@Valid KeywordForm keywordForm) {
         PageEntity<LinkedHashMap> keywordPageEntity = this.restTemplate.getForObject(Constant.KEYWORD_QUERY_URL.replace("{1}", "20")
-                .replace("{2}", Integer.toString(keywordForm.getStartPage())), PageEntity.class);
+                .replace("{2}", String.valueOf(keywordForm.getStartPage())), PageEntity.class);
         List<LinkedHashMap> keywords = keywordPageEntity.getDatas();
         List<String> keywordList = keywords.stream().map(kw -> (String)kw.get("keyword")).collect(Collectors.toList());
         int count = 0;
@@ -93,24 +95,5 @@ public class KeywordController {
         return "redirect:/";
     }
 
-    @RequestMapping("/postQatToPrd")
-    @ResponseBody
-    public String sendToPrd() {
-        int totalPage = 1_50000 +1;
-        for (int i = 1842; i < totalPage; i++) {   // int i = 1885;  2153
-            System.out.println("-------------- 第 " + i + " 页 ------------------");
-            Pageable pageable = new PageRequest(i,100, Constant.DB_ASC_SORT);
-            List<ArticleForPost> articles = articleForPostRepo.findAll(pageable).getContent();
-            articles.forEach(article -> restTemplate.postForObject(Constant.ARTICLE_SEND_URL, article, ArticleForPost.class));
-
-            articles.stream().filter(article -> !article.getContent().equals("<p></p>")).forEach(article -> {
-                restTemplate.postForObject(Constant.ARTICLE_SEND_URL, article, ArticleForPost.class);
-                count.set(count.get() + 1);
-                System.out.print(count.get() + ":" + article.getId() + " , ");
-            });
-            System.out.println();
-        }
-        return "OK";
-    }
 
 }
