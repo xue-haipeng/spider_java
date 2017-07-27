@@ -1,5 +1,6 @@
 package com.solomon.service.impl;
 
+import com.solomon.common.Constant;
 import com.solomon.domain.*;
 import com.solomon.service.ArticleService;
 import com.solomon.service.LoggingDataService;
@@ -19,6 +20,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -52,8 +54,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             throw new RuntimeException("MenuId为空");
         }
         Map<String, String> resultMap = fetchArticleOrQuestion(form, url);
-        Pattern pattern = Pattern.compile("\\d{4}[-|\\/|年|\\.]\\d{1,2}[-|\\/|月|\\.]\\d{1,2}([日|号])?");
-        Matcher matcher = pattern.matcher(resultMap.get("originDate"));
+        Matcher matcher = Constant.DATE_PATTERN.matcher(resultMap.get("originDate"));
         String dateStr = matcher.find() ? matcher.group(0) : null;
         String[] dateArr = dateStr.split("[-|\\/|年|月|日|号|\\.]");
         if (dateArr[1].length() == 1) {
@@ -63,7 +64,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             dateArr[2] = "0" + dateArr[2];
         }
         java.sql.Date date = java.sql.Date.valueOf(StringUtils.join(dateArr, "-"));
-
+        final String destination = "/topic/progress/" + random + "_" + form.getStartIndex() + "_" + form.getEndIndex();
         if (form instanceof ArticleForm) {
             Article article = new Article();
             article.setTitle(resultMap.get("title"));
@@ -76,7 +77,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
                 articleService.sentToPrd(article);
 //                articleService.insertMongoArticle((MongoArticle) MongoConverter.entityToMongo(article));
                 count.set(count.get() + 1);
-                messagingTemplate.convertAndSend("/topic/progress/" + random, count.get() + ":" + total.getAndIncrement());
+                messagingTemplate.convertAndSend(destination, count.get() + ":" + total.getAndIncrement());
                 System.out.println(article);
             } catch (Exception e) {
                 logger.error("send article to prd failed: {}" ,e.getMessage());
@@ -94,7 +95,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
 //                questionService.insertQuestion(question);
                 questionService.sentToPrd(question);
                 count.set(count.get() + 1);
-                messagingTemplate.convertAndSend("/topic/progress/" + random, count.get() + ":" + total.getAndIncrement());
+                messagingTemplate.convertAndSend(destination, count.get() + ":" + total.getAndIncrement());
                 System.out.println(question);
             } catch (Exception e) {
                 logger.error("send question to prd failed: {}" ,e.getMessage());
@@ -111,6 +112,12 @@ public class LoggingDataServiceImpl implements LoggingDataService {
      */
     @Override
     public Map<String, String> fetchArticleOrQuestion(FormData form, String url) {
+        if (url.replace("http://", "").contains("//")) {
+            url = "http://" + url.replace("http://", "").replace("//", "/");
+        }
+        if (!url.startsWith("http://")) {
+            url = "http://" + url;
+        }
         logger.info("Fetching {} ... ", url);
         Map<String, String> resultMap = new ConcurrentHashMap<>();
         Document doc = null;
@@ -120,14 +127,22 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             try {
                 doc = Jsoup.connect(url).timeout(10_000).get();
             } catch (IOException e1) {
-                logger.error("页面无法访问：{}", url, e1);
+                if (e1 instanceof SocketTimeoutException) {
+                    try {
+                        doc = Jsoup.connect(url).timeout(60_000).get();
+                    } catch (IOException ioe) {
+                        logger.error("页面无法访问：{}\n{}", url, ioe.getMessage());
+                    }
+                } else {
+                    logger.error("IO异常：{}\n{}", url, e1.getMessage());
+                }
             }
         }
         Element title = doc.select(form.getTitle()) == null ? null : doc.select(form.getTitle()).first();
         if (title == null && !StringUtils.isEmpty(form.getTitle2())) {
             title = doc.select(form.getTitle2()).first();
         }
-        if (title == null) {
+        if (title == null || StringUtils.isBlank(title.text())) {
             throw new RuntimeException("标题为空");
         }
         Element publish_date = doc.select(form.getPubDate1()) == null ? null : doc.select(form.getPubDate1()).first();
@@ -149,7 +164,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             if (content == null && StringUtils.isEmpty(articleForm.getContent2())) {
                 content = doc.select(articleForm.getContent2()) == null ? null : doc.select(articleForm.getContent2()).first();
             }
-            if (content == null) {
+            if (content == null || StringUtils.isBlank(content.html())) {
                 throw new RuntimeException("内容为空");
             }
             if (articleForm.getExFirst() != null && articleForm.getExFirst()) {
@@ -161,8 +176,7 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             if (!StringUtils.isEmpty(articleForm.getExcluded2())) {
                 content.select(articleForm.getExcluded2()).first().remove();
             }
-            final String regex_script = "<script[^>]*?>[\\s\\S]*?<\\/script>";
-            resultMap.put("content", content.html().replaceAll(regex_script, ""));
+            resultMap.put("content", content.html().replaceAll(Constant.REGEX_SCRIPT_TAG, ""));
         } else if (form instanceof QuestionForm) {
             QuestionForm questionForm = (QuestionForm) form;
             question = doc.select(questionForm.getQuestion()).first();

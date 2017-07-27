@@ -111,7 +111,7 @@ public class OrdinaryTest {
 
     @Test
     public void test5() throws URISyntaxException, MalformedURLException {
-        String url = "http://man.wxlink.jd.com/dataCollect/article";
+        String url = "http://www.caiguu.com/shichang/ceping/22_3.html";
         URL url1 = new URL(url);
         String domain = url1.getHost();
         System.out.println(domain);
@@ -165,6 +165,14 @@ public class OrdinaryTest {
             System.out.println(num);
         } catch (Exception e) {
             System.out.println("Catched ....................... " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void test9() {
+        String url = "www.caiguu.com//shichang/ceping/142945.html";
+        if (url.replace("://", "").contains("//")) {
+
         }
     }
 }

@@ -107,14 +107,14 @@ public class ArticleController {
     }
 
     private Map<String, String> testFech(FormData form) throws MalformedURLException {
-        String url = form.getUrl().replace("{}", Integer.toString(form.getStartIndex()));
+        String url = form.getUrl().replace("{}", String.valueOf(form.getStartIndex()));
         Document doc = null;
         try {
             doc = Jsoup.connect(url).timeout(3000).get();
         } catch (Exception e) {
             if (e instanceof SocketTimeoutException) {
                 try {
-                    doc = Jsoup.connect(url).timeout(3000).get();
+                    doc = Jsoup.connect(url).timeout(6000).get();
                 } catch (IOException e1) {
                     logger.error("无法连接到网址： {}", e.getMessage(), e);
                 }
@@ -155,17 +155,18 @@ public class ArticleController {
         md5.update(form.getUrl().getBytes());
         String md5key = new BigInteger(1, md5.digest()).toString(16);
         int curPage = 0;
+        final String destination = "/topic/pages/" + md5key + "_" + form.getStartIndex() + "_" + form.getEndIndex();
         for (int i = form.getStartIndex(); i < form.getEndIndex(); i++) {
             curPage = i;
             logger.info("-------- 第 {}/{} 页 --------", i, form.getEndIndex());
-            messagingTemplate.convertAndSend("/topic/pages/" + md5key, i + ":" + form.getEndIndex());
+            messagingTemplate.convertAndSend(destination, i + ":" + form.getEndIndex());
             String url = form.getUrl().replace("{}", Integer.toString(i));
             Document doc = null;
             try {
-                doc = Jsoup.connect(url).timeout(3000).get();
+                doc = Jsoup.connect(url).timeout(12_000).get();
             } catch (Exception e) {
                 Thread.sleep(6000L);
-                doc = Jsoup.connect(url).timeout(20_000).get();
+                doc = Jsoup.connect(url).timeout(60_000).get();
             }
             Element candidate = form.getExtractArea().startsWith("<") ? doc.getElementsByTag(form.getExtractArea()
                     .replace("<","")).first() : doc.select(form.getExtractArea()).first();

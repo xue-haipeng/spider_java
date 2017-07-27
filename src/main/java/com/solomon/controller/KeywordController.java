@@ -44,11 +44,13 @@ public class KeywordController {
     @Autowired
     private ArticleForPostRepo articleForPostRepo;
 
+    @ApiOperation(value = "二级关键词采集发送接口", notes = "插入指定数量的关键词")
+    @ApiImplicitParam(name = "total", value = "关键词总数", required = true, dataType = "integer")
     @GetMapping("/insertSecondaryKw")
     public void insertKeywords(int total) {
         final int totalPage = total/100 + 2;
         for (int i = 1; i < totalPage; i++) {
-            Pageable pageable = new PageRequest(i,10, Constant.DB_ASC_SORT);
+            Pageable pageable = new PageRequest(i, Constant.PAGE_SIZE_DB_QUERY, Constant.DB_ASC_SORT);
             List<String> keywords = keywordService.getKeywordList(pageable);
             keywords.forEach(kw -> {
                 List<Keyword> keywordList = keywordService.findSecondaryKeywords(kw);

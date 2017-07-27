@@ -2,7 +2,6 @@ var stompClient = null;
 
 function setConnected(connected) {
     $("#show").prop("disabled", connected);
-    // $("#disconnect").prop("disabled", !connected);
     if (connected) {
         $("#progress").show();
     }
@@ -19,7 +18,6 @@ function connect(topicId) {
         setConnected(true);
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/progress/'+topicId, function (count) {
-            // showProgress(JSON.parse(count.body));
             showProgress(count.body);
         });
     });
@@ -55,20 +53,11 @@ function disconnect() {
     console.log("Disconnected");
 }
 
-function sendName() {
-    stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()}));
-}
-
 $(function () {
     $( "#show" ).click(function() {
-        var md5key = $.md5($("#url").val());
+        var md5key = $.md5($("#url").val()) + '_' + $("#startIndex").val() + '_' + $("#endIndex").val();
         connect(md5key);
     });
-    // $( "#disconnect" ).click(function() { disconnect(); });
-    // $( "#send" ).click(function() { sendName(); });
-/*    var total_cur = $("#")
-    $("#submit").click(function () {
 
-    })*/
 });
 
