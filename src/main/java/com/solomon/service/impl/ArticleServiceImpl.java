@@ -88,7 +88,7 @@ public class ArticleServiceImpl implements ArticleService {
                         Thread.sleep(600_000);
                         articles = articleForPostRepo.findAll(pageable).getContent();
                     } catch (InterruptedException | PersistenceException | JDBCConnectionException ee) {
-                        logger.error("Connect to QAT DB failed after 2 times retry");
+                        logger.error("Connect to Database failed after 2 times retry");
                         throw new RuntimeException(e);
                     }
                 }

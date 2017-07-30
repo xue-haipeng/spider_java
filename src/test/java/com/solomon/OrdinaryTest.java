@@ -1,5 +1,6 @@
 package com.solomon;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,6 +14,8 @@ import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -172,7 +175,33 @@ public class OrdinaryTest {
     public void test9() {
         String url = "www.caiguu.com//shichang/ceping/142945.html";
         if (url.replace("://", "").contains("//")) {
-
         }
     }
+
+    @Test
+    public void test10() {
+        LocalDate localDate = LocalDate.parse("2017-07-30");
+        LocalDateTime localDateTime = localDate.atTime(10, 45);
+        System.out.println(localDateTime);
+        LocalDateTime ldt = localDateTime.minusHours(12L);
+        LocalDate ld = ldt.toLocalDate();
+        System.out.println(ld);
+
+    }
+
+    @Test
+    public void test11() {
+        String abc = "The parade, long anticipated but only officially announced Saturday, was part of the celebrations" +
+                " of the 90th anniversary of the People's Liberation Army (PLA). It was also viewed as a potent reminder of" +
+                " Xi's firm grip on power ahead of a key Communist Party meeting this fall, where a major leadership reshuffle is expected.";
+        String bcd = "Communist Party meeting this fall, ok?";
+
+        String regex = "^Communist.*fall.*";
+        System.out.println(bcd.matches(regex));;
+        System.out.println(StringUtils.contains(bcd, regex));
+
+        String url = "http://www.baidu.com//abcd/efg123.html";
+        String reg = "(?<!(http:))(//)";
+        System.out.println(url.replace(reg, "/"));
+     }
 }

@@ -10,7 +10,7 @@ import java.util.Date;
  * Created by xuehaipeng on 2017/7/4.
  */
 @Entity
-@Table(name = "spider_wx_article")
+@Table(name = "spider_wx_article_1")
 public class ArticleForPost implements Serializable{
     private static final long serialVersionUID = 1L;
     @Id
