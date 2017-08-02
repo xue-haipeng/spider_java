@@ -158,6 +158,9 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         Element content = null;
         Element question = null;
         Element answer = null;
+        String exFirst = "";
+        String exLast = "";
+        String exclude2 = "";
         if (form instanceof ArticleForm) {
             ArticleForm articleForm = (ArticleForm) form;
             content = doc.select(articleForm.getContent()).first();
@@ -168,15 +171,16 @@ public class LoggingDataServiceImpl implements LoggingDataService {
                 throw new RuntimeException("内容为空");
             }
             if (articleForm.getExFirst() != null && articleForm.getExFirst()) {
-                content.children().first().remove();
+                exFirst = content.children().first().html();
             }
             if (articleForm.getExLast() != null && articleForm.getExLast()) {
-                content.children().last().remove();
+                exLast = content.children().last().html();
             }
             if (!StringUtils.isEmpty(articleForm.getExcluded2())) {
-                content.select(articleForm.getExcluded2()).first().remove();
+                exclude2 = content.select(articleForm.getExcluded2()).first().html();
             }
-            resultMap.put("content", content.html().replaceAll(Constant.REGEX_SCRIPT_TAG, ""));
+            resultMap.put("content", content.html().replaceAll(Constant.REGEX_SCRIPT_TAG, "")
+                    .replace(exFirst, "").replace(exLast, "").replace(exclude2, ""));
         } else if (form instanceof QuestionForm) {
             QuestionForm questionForm = (QuestionForm) form;
             question = doc.select(questionForm.getQuestion()).first();
@@ -184,15 +188,16 @@ public class LoggingDataServiceImpl implements LoggingDataService {
                 throw new RuntimeException("问题为空");
             }
             if (questionForm.getExFirst() != null && questionForm.getExFirst()) {
-                question.children().first().remove();
+                exFirst = question.children().first().html();
             }
             if (questionForm.getExLast() != null && questionForm.getExLast()) {
-                question.children().last().remove();
+                exLast = question.children().last().html();
             }
             if (!StringUtils.isEmpty(questionForm.getExcluded2())) {
-                question.select(questionForm.getExcluded2()).first().remove();
+                exclude2 = question.select(questionForm.getExcluded2()).first().html();
             }
-            resultMap.put("question", question.html());
+            String  questionStr = StringUtils.isBlank(question.html()) ? title.html(): question.html();
+            resultMap.put("question", questionStr);
             answer = doc.select(questionForm.getAnswer()).first();
             if (answer != null) {
                 if (answer.children().size() > 3) {

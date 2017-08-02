@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 public interface Constant {
     String ARTICLE_SEND_URL = "http://man.wxlink.jd.com/dataCollect/article";
     String QUESTION_SEND_URL = "http://man.wxlink.jd.com/dataCollect/question";
+//    String QUESTION_SEND_URL = "http://man.jcloud.com/dataCollect/question";
     Sort DB_ASC_SORT = new Sort(Sort.Direction.ASC, "id");
     String KEYWORD_QUERY_URL = "http://man.wxlink.jd.com/dataCollect/getKeywordList?pageSize={1}&pageNow={2}";
     String SECONDARY_KW_INSERT_URL = "http://man.wxlink.jd.com/dataCollect/secondaryKeyword";

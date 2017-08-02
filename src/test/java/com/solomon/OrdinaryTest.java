@@ -22,6 +22,8 @@ import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Created by xuehaipeng on 2017/6/25.
@@ -203,5 +205,11 @@ public class OrdinaryTest {
         String url = "http://www.baidu.com//abcd/efg123.html";
         String reg = "(?<!(http:))(//)";
         System.out.println(url.replace(reg, "/"));
+     }
+
+     @Test
+     public void test12() {
+         IntSummaryStatistics iss = IntStream.rangeClosed(1, 100).summaryStatistics();
+         System.out.println("count: " + iss.getCount() + " max: " + iss.getMax() + " min: " + iss.getMin() + " average: " + iss.getAverage() + " sum: " + iss.getSum());
      }
 }

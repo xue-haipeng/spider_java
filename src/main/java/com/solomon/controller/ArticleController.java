@@ -2,6 +2,7 @@ package com.solomon.controller;
 
 import com.solomon.common.Constant;
 import com.solomon.service.ArticleService;
+import com.solomon.service.QuestionService;
 import com.solomon.vo.ArticleForm;
 import com.solomon.vo.FormData;
 import com.solomon.vo.QuestionForm;
@@ -47,6 +48,9 @@ public class ArticleController {
 
     @Autowired
     ArticleService articleService;
+
+    @Autowired
+    QuestionService questionService;
 
     @Autowired
     SimpMessagingTemplate messagingTemplate;
@@ -144,7 +148,7 @@ public class ArticleController {
     })
     @GetMapping("/question/sendToPrd")
     public String sendQuestionToPrdDb(@RequestParam int startPage, @RequestParam int endPage) {
-        CompletableFuture.supplyAsync(() -> articleService.sentToPrd(startPage, endPage));
+        CompletableFuture.supplyAsync(() -> questionService.sentToPrd(startPage, endPage));
         return "submitted";
     }
 
