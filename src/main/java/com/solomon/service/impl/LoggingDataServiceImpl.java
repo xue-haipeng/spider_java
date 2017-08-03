@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -112,10 +114,10 @@ public class LoggingDataServiceImpl implements LoggingDataService {
      */
     @Override
     public Map<String, String> fetchArticleOrQuestion(FormData form, String url) {
-        if (url.replace("http://", "").contains("//")) {
+        if (!url.contains("https://") && url.replace("http://", "").contains("//")) {
             url = "http://" + url.replace("http://", "").replace("//", "/");
         }
-        if (!url.startsWith("http://")) {
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
             url = "http://" + url;
         }
         logger.info("Fetching {} ... ", url);
@@ -146,6 +148,11 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             throw new RuntimeException("标题为空");
         }
         Element publish_date = doc.select(form.getPubDate1()) == null ? null : doc.select(form.getPubDate1()).first();
+        int j = 1;
+        while (doc.select(form.getPubDate1()).size() >= j && !publish_date.text().contains("20") && !publish_date.text().contains("19") && !publish_date.text().contains("分钟前")
+                && !publish_date.text().contains("小时前") && !publish_date.text().contains("昨天") && !publish_date.text().replace("\\s+", "").contains("1天前")) {
+            publish_date = doc.select(form.getPubDate1()).get(j++);
+        }
         if (publish_date == null && !StringUtils.isEmpty(form.getPubDate2())) {
             publish_date = doc.select(form.getPubDate2()) == null ? null : doc.select(form.getPubDate2()).first();
         }
@@ -222,6 +229,12 @@ public class LoggingDataServiceImpl implements LoggingDataService {
             });
         }
         String originDate = publish_date.text();
+        if (originDate.contains("小时前") || originDate.contains("分钟前")) {
+            originDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
+        }
+        if (originDate.contains("天前")) {
+            originDate = LocalDate.now().minusDays(1).format(DateTimeFormatter.ISO_DATE);
+        }
         logger.info(title.text());
         resultMap.put("title", title.text());
         resultMap.put("originDate", originDate);

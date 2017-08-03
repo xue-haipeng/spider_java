@@ -212,4 +212,10 @@ public class OrdinaryTest {
          IntSummaryStatistics iss = IntStream.rangeClosed(1, 100).summaryStatistics();
          System.out.println("count: " + iss.getCount() + " max: " + iss.getMax() + " min: " + iss.getMin() + " average: " + iss.getAverage() + " sum: " + iss.getSum());
      }
+
+     @Test
+     public void test13() {
+        String url = "https://wenda.cngold.org/question69889.htm";
+         System.out.println(url.replace("http://", ""));
+     }
 }
