@@ -16,6 +16,7 @@ public interface Constant {
     String SECONDARY_KW_INSERT_URL = "http://man.wxlink.jd.com/dataCollect/secondaryKeyword";
     Pattern URL_DOMAIN_PATTEN = Pattern.compile("^([hH][tT]{2}[pP]://|[hH][tT]{2}[pP][sS]://)(([A-Za-z0-9-~]+).)+(com|cn|net|org|biz|info|cc|tv)");
     Pattern DATE_PATTERN = Pattern.compile("\\d{4}[-|\\/|年|\\.]\\d{1,2}[-|\\/|月|\\.]\\d{1,2}([日|号])?");
+    String DATE_DELIMITER = "[-|\\/|年|月|日|号|\\.]";
     String REGEX_SCRIPT_TAG = "<script[^>]*?>[\\s\\S]*?<\\/script>";
     int PAGE_SIZE_DB_QUERY = 100;
 }

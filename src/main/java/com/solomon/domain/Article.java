@@ -1,5 +1,7 @@
 package com.solomon.domain;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -39,7 +41,7 @@ public class Article extends ZixunEntity implements Serializable {
     public String toString() {
         return "Article{" +
 //                "id=" + id +
-                ", content='" + content.substring(0, 100) + '\'' +
+                ", content='" + StringUtils.substring(content, 0, 99) + '\'' +
                 "} " + super.toString();
     }
 }

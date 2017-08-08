@@ -58,7 +58,10 @@ public class LoggingDataServiceImpl implements LoggingDataService {
         Map<String, String> resultMap = fetchArticleOrQuestion(form, url);
         Matcher matcher = Constant.DATE_PATTERN.matcher(resultMap.get("originDate"));
         String dateStr = matcher.find() ? matcher.group(0) : null;
-        String[] dateArr = dateStr.split("[-|\\/|年|月|日|号|\\.]");
+        if (dateStr == null) {
+            throw new RuntimeException("未发现合法日期字符串");
+        }
+        String[] dateArr = dateStr.split(Constant.DATE_DELIMITER);
         if (dateArr[1].length() == 1) {
             dateArr[1] = "0" + dateArr[1];
         }

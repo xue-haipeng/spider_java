@@ -1,5 +1,7 @@
 package com.solomon.domain;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -46,8 +48,8 @@ public class Question extends ZixunEntity {
     @Override
     public String toString() {
         return "Question{" +
-                "question='" + question.substring(0, 20) + '\'' +
-                ", answer='" + answer.substring(0, 10) + '\'' +
+                "question='" + StringUtils.substring(question, 0, 19) + '\'' +
+                ", answer='" + StringUtils.substring(answer, 0, 9) + '\'' +
                 "} " + super.toString();
     }
 }

@@ -9,6 +9,7 @@ import com.solomon.repository.ArticleForPostRepo;
 import com.solomon.repository.ArticleRepo;
 import com.solomon.repository.mongo.MongoArticleRepo;
 import com.solomon.service.ArticleService;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.JDBCConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,11 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void sentToPrd(Article article) {
-        restTemplate.postForObject(Constant.ARTICLE_SEND_URL, article, ArticleForPost.class);
+        if (!"<p></p>".equals(StringUtils.trim(article.getContent()))) {
+            restTemplate.postForObject(Constant.ARTICLE_SEND_URL, article, ArticleForPost.class);
+        } else {
+            logger.error("Article Content is Empty");
+        }
     }
 
     @Override

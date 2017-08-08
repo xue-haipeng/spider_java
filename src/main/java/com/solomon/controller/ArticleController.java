@@ -180,7 +180,7 @@ public class ArticleController {
             URL uri = new URL(url);
             links.forEach(link -> {
                 try {
-                    String href = link.attr("href").startsWith("http") ? link.attr("href") : uri.getHost() + link.select("a").attr("href");
+                    String href = link.attr("href").startsWith("http") ? link.attr("href") : uri.getHost() + "/report/" + link.select("a").attr("href");
 //                    String href = link.nextElementSibling().attr("href");   // <li>标签含两个<a>
                     loggingDataService.insertArticleOrQuestion(form, href, md5key);
                 } catch (Exception e) {
